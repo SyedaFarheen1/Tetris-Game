@@ -75,10 +75,10 @@ public:
 
         }
         else if (rotationState == 1) {
-            blockX[0] = x;  blockY[0] = y-1;
+            blockX[0] = x;      blockY[0] = y-1;
             blockX[1] = x;      blockY[1] = y;
-            blockX[2] = x;  blockY[2] = y+1;
-            blockX[3] = x-1;      blockY[3] = y;
+            blockX[2] = x;      blockY[2] = y+1;
+            blockX[3] = x-1;    blockY[3] = y;
             
         }
         else if (rotationState == 2) {
@@ -96,6 +96,7 @@ public:
 
     }
 };
+
 
 
 class Board {

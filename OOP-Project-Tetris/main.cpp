@@ -139,7 +139,7 @@ public:
     }
 };
 
-//O-piece
+//Square-piece
 class Sq_Piece : public Piece {
 private:
     sf::RectangleShape blocks[4];
@@ -271,6 +271,17 @@ int main() {
                     tPiece->rotate();
             }
             //moving I piece
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Left)
+                    tPiece->move(-1, 0);
+                else if (event.key.code == sf::Keyboard::Right)
+                    tPiece->move(1, 0);
+                else if (event.key.code == sf::Keyboard::Down)
+                    tPiece->move(0, 1);
+                else if (event.key.code == sf::Keyboard::Up)
+                    tPiece->rotate();
+            }
+            //moving square piece
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Left)
                     tPiece->move(-1, 0);

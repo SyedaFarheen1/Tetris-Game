@@ -97,6 +97,66 @@ public:
     }
 };
 
+// Derived class: I_Piece
+class I_Piece : public Piece {
+private:
+    sf::RectangleShape blocks[4];
+    int rotationState;
+
+public:
+    I_Piece() {
+        color = sf::Color::Cyan;
+        blockX[0] = 5; blockY[0] = 0;
+        blockX[1] = 5; blockY[1] = 1;
+        blockX[2] = 5; blockY[2] = 2;
+        blockX[3] = 5; blockY[3] = 3;
+
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setFillColor(color);
+        }
+
+        rotationState = 0;
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
+            window.draw(blocks[i]);
+        }
+    }
+
+    void move(int dx, int dy) override {
+        for (int i = 0; i < 4; i++) {
+            blockX[i] += dx;
+            blockY[i] += dy;
+        }
+    }
+
+    void rotate() override {
+        rotationState = (rotationState + 1) % 2;
+
+        int Ix = blockX[1];
+        int Iy = blockY[1];
+
+        if (rotationState == 0) {
+            
+
+            blockX[0] = Ix - 1; blockY[0] = Iy;
+            blockX[1] = Ix;     blockY[1] = Iy;
+            blockX[2] = Ix + 1; blockY[2] = Iy;
+            blockX[3] = Ix + 2; blockY[3] = Iy;
+        }
+        else if (rotationState == 1) {
+            blockX[0] = Ix; blockY[0] = Iy - 1;
+            blockX[1] = Ix; blockY[1] = Iy;
+            blockX[2] = Ix; blockY[2] = Iy + 1;
+            blockX[3] = Ix; blockY[3] = Iy + 2;
+        }
+    }
+};
+
+
 
 
 class Board {
@@ -157,8 +217,12 @@ public:
 int main() {
     sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
 
-    Piece* currentPiece = new T_Piece();
+    Piece* tPiece = new T_Piece();
+    Piece* iPiece = new I_Piece();
     Board board;
+
+    tPiece->setOffset(50, 150);
+    iPiece->setOffset(200, 100);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -166,25 +230,38 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // Example input
+            // moving t piece
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Left)
-                    currentPiece->move(-1, 0);
+                    tPiece->move(-1, 0);
                 else if (event.key.code == sf::Keyboard::Right)
-                    currentPiece->move(1, 0);
+                    tPiece->move(1, 0);
                 else if (event.key.code == sf::Keyboard::Down)
-                    currentPiece->move(0, 1);
+                    tPiece->move(0, 1);
                 else if (event.key.code == sf::Keyboard::Up)
-                    currentPiece->rotate();
+                    tPiece->rotate();
+            }
+            //moving I piece
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Left)
+                    iPiece->move(-1, 0);
+                else if (event.key.code == sf::Keyboard::Right)
+                    iPiece->move(1, 0);
+                else if (event.key.code == sf::Keyboard::Down)
+                    iPiece->move(0, 1);
+                else if (event.key.code == sf::Keyboard::Up)
+                    iPiece->rotate();
             }
         }
 
         window.clear(sf::Color::Black);
         board.draw(window);         // Draw board with boundaries
-        currentPiece->draw(window);
+        tPiece->draw(window);
+        iPiece->draw(window);
         window.display();
     }
 
-    delete currentPiece;
+    delete tPiece;
+    delete iPiece;
     return 0;
 }

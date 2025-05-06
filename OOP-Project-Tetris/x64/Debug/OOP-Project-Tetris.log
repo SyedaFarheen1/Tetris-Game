@@ -1,8 +1,8 @@
 ﻿  main.cpp
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(44,61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(44,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(93,72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(93,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(103,74): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(103,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(50,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(50,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(99,72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(99,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(109,74): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(109,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   OOP-Project-Tetris.vcxproj -> C:\Users\syeda\source\repos\OOP-Project-Tetris\x64\Debug\OOP-Project-Tetris.exe

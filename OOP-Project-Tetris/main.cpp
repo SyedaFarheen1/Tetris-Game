@@ -9,8 +9,14 @@ protected:
     int blockX[4];
     int blockY[4];
     sf::Color color;
+    int offsetX = 50;
+    int offsetY = 150;
 
 public:
+    void setOffset(int x, int y) {
+        offsetX = x;
+        offsetY = y;
+    }
     virtual void draw(sf::RenderWindow& window) = 0;
     virtual void move(int dx, int dy) = 0;
     virtual void rotate() = 0;
@@ -41,7 +47,7 @@ public:
 
     void draw(sf::RenderWindow& window) override {
         for (int i = 0; i < 4; i++) {
-            blocks[i].setPosition(blockX[i] * 30, blockY[i] * 30);
+            blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
             window.draw(blocks[i]);
         }
     }

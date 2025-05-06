@@ -183,7 +183,6 @@ public:
     }
 };
 
-
 // L_Piece
 class L_Piece : public Piece {
 private:
@@ -225,6 +224,48 @@ public:
     void rotate() override {
         // Basic placeholder; real rotation logic would update blockX/Y based on state
         cout << "Rotating L piece" << endl;
+    }
+};
+
+//J-piece
+class J_Piece : public Piece {
+private:
+    sf::RectangleShape blocks[4];
+    int rotationState;
+
+public:
+    J_Piece() {
+        color = sf::Color(0, 0, 255); // Blue
+
+        blockX[0] = 4; blockY[0] = 0;
+        blockX[1] = 5; blockY[1] = 0;
+        blockX[2] = 6; blockY[2] = 0;
+        blockX[3] = 4; blockY[3] = 1;
+
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setFillColor(color);
+        }
+
+        rotationState = 0;
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
+            window.draw(blocks[i]);
+        }
+    }
+
+    void move(int dx, int dy) override {
+        for (int i = 0; i < 4; i++) {
+            blockX[i] += dx;
+            blockY[i] += dy;
+        }
+    }
+
+    void rotate() override {
+        cout << "Rotating J piece" << endl;
     }
 };
 
@@ -292,13 +333,14 @@ int main() {
     Piece* iPiece = new I_Piece();
     Piece* sqPiece = new Sq_Piece();
     Piece* lPiece = new L_Piece();
-
+    Piece* jPiece = new J_Piece();
     Board board;
 
     tPiece->setOffset(50, 150);
     iPiece->setOffset(300, 150);
     sqPiece->setOffset(450, 200);
     lPiece->setOffset(600, 300);
+   jPiece->setOffset(250, 300);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -350,6 +392,17 @@ int main() {
                 else if (event.key.code == sf::Keyboard::Up)
                     lPiece->rotate();
             }
+            //moving j piece
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Left)
+                    jPiece->move(-1, 0);
+                else if (event.key.code == sf::Keyboard::Right)
+                    jPiece->move(1, 0);
+                else if (event.key.code == sf::Keyboard::Down)
+                    jPiece->move(0, 1);
+                else if (event.key.code == sf::Keyboard::Up)
+                    jPiece->rotate();
+            }
         }
 
         window.clear(sf::Color::Black);
@@ -358,6 +411,7 @@ int main() {
         iPiece->draw(window);
         sqPiece->draw(window);
         lPiece->draw(window);
+        jPiece->draw(window);
         window.display();
     }
 
@@ -365,5 +419,6 @@ int main() {
     delete iPiece;
     delete sqPiece;
     delete lPiece;
+    delete jPiece;
     return 0;
 }

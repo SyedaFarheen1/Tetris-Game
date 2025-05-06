@@ -114,7 +114,7 @@ int main() {
         }
 
         window.clear(sf::Color::Black);
-        O.draw(window);
+       
         I.draw(window);
         
         window.display();

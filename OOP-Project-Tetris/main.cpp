@@ -139,6 +139,50 @@ public:
     }
 };
 
+//O-piece
+class Sq_Piece : public Piece {
+private:
+    sf::RectangleShape blocks[4];
+    int rotationState; // O piece doesn’t rotate, but keeping for consistency
+
+public:
+    Sq_Piece() {
+        color = sf::Color::Yellow;
+
+        // A 2x2 square in the top-middle of the board
+        blockX[0] = 4; blockY[0] = 0;
+        blockX[1] = 5; blockY[1] = 0;
+        blockX[2] = 4; blockY[2] = 1;
+        blockX[3] = 5; blockY[3] = 1;
+
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setFillColor(color);
+        }
+
+        rotationState = 0;
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setPosition(offsetX + blockX[i] * 30, offsetY + blockY[i] * 30);
+            window.draw(blocks[i]);
+        }
+    }
+
+    void move(int dx, int dy) override {
+        for (int i = 0; i < 4; i++) {
+            blockX[i] += dx;
+            blockY[i] += dy;
+        }
+    }
+
+    void rotate() override {
+        // O piece does not rotate
+        cout << "O piece does not rotate" << endl;
+    }
+};
+
 
 
 class Board {
@@ -201,10 +245,13 @@ int main() {
 
     Piece* tPiece = new T_Piece();
     Piece* iPiece = new I_Piece();
+    Piece* sqPiece = new Sq_Piece();
+
     Board board;
 
     tPiece->setOffset(50, 150);
     iPiece->setOffset(300, 150);
+    sqPiece->setOffset(450, 200);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -240,10 +287,12 @@ int main() {
         board.draw(window);         // Draw board with boundaries
         tPiece->draw(window);
         iPiece->draw(window);
+        sqPiece->draw(window);
         window.display();
     }
 
     delete tPiece;
     delete iPiece;
+    delete sqPiece;
     return 0;
 }

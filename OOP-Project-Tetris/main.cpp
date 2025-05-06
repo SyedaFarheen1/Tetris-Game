@@ -64,7 +64,7 @@ public:
 };
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(300, 600), "Tetris Game");
+    sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
 
     Piece* currentPiece = new T_Piece();
 

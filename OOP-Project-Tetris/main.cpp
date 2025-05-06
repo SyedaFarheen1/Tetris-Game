@@ -58,8 +58,18 @@ public:
     }
 
     void rotate() override {
-        // Rotation logic can be added later based on rotationState
-        cout << "Rotating T piece" << endl;
+        int x = blockX[1];
+        int y = blockY[1];
+
+        switch (rotationState) {
+        case 0:
+            blockX[0] = x;   blockY[0] = y - 1;
+            blockX[1] = x;   blockY[1] = y;
+            blockX[2] = x;   blockY[2] = y + 1;
+            blockX[3] = x + 1; blockY[3] = y;
+            break;
+        }
+
     }
 };
 

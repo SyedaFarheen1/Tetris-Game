@@ -209,7 +209,7 @@ public:
         blockX[3] = 5; blockY[3] = 1;
 
         for (int i = 0; i < 4; i++) {
-            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setSize(sf::Vector2f(30, 30)); // Each block is 30x30 pixels
             blocks[i].setFillColor(color);
         }
 
@@ -219,6 +219,7 @@ public:
     void draw(sf::RenderWindow& window) override {
         if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
+            // Correctly align the blocks with the grid
             blocks[i].setPosition(offsetX + blockX[i] * 30, offsetY + blockY[i] * 30);
             window.draw(blocks[i]);
         }
@@ -234,12 +235,15 @@ public:
 
     void rotate() override {
         if (!is_active) return; // Only rotate if active
-        cout << "square piece does not rotate" << endl;
+        // Square piece does not rotate
+        cout << "Square piece does not rotate" << endl;
     }
-	Piece* clone() const override {
-		return new Sq_Piece(*this); // Return a new instance of Sq_Piece
-	}
+
+    Piece* clone() const override {
+        return new Sq_Piece(*this); // Return a new instance of Sq_Piece
+    }
 };
+
 
 // L_Piece
 class L_Piece : public Piece {

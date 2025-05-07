@@ -625,6 +625,9 @@ int main() {
 
     Board board;
 
+    // Seed the random number generator to ensure different sequences each time
+    srand(static_cast<unsigned int>(time(nullptr)));
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -632,14 +635,40 @@ int main() {
                 window.close();
 
             if (currentPiece && event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left)
-                    currentPiece->move(-1, 0);
-                else if (event.key.code == sf::Keyboard::Right)
-                    currentPiece->move(1, 0);
-                else if (event.key.code == sf::Keyboard::Down)
+                if (event.key.code == sf::Keyboard::Left) {
+                    // Check if the piece can move left
+                    bool canMoveLeft = true;
+                    for (int i = 0; i < 4; ++i) {
+                        int blockX = currentPiece->getX(i);
+                        int blockY = currentPiece->getY(i);
+                        if (blockX - 1 < 0 || board.getCell(blockY, blockX - 1) != sf::Color::Transparent) {
+                            canMoveLeft = false;
+                            break;
+                        }
+                    }
+                    if (canMoveLeft)
+                        currentPiece->move(-1, 0);
+                }
+                else if (event.key.code == sf::Keyboard::Right) {
+                    // Check if the piece can move right
+                    bool canMoveRight = true;
+                    for (int i = 0; i < 4; ++i) {
+                        int blockX = currentPiece->getX(i);
+                        int blockY = currentPiece->getY(i);
+                        if (blockX + 1 >= 10 || board.getCell(blockY, blockX + 1) != sf::Color::Transparent) {
+                            canMoveRight = false;
+                            break;
+                        }
+                    }
+                    if (canMoveRight)
+                        currentPiece->move(1, 0);
+                }
+                else if (event.key.code == sf::Keyboard::Down) {
                     currentPiece->move(0, 1);
-                else if (event.key.code == sf::Keyboard::Up)
+                }
+                else if (event.key.code == sf::Keyboard::Up) {
                     currentPiece->rotate();
+                }
             }
         }
 
@@ -703,3 +732,5 @@ int main() {
 
     return 0;
 }
+
+

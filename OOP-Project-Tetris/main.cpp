@@ -664,7 +664,31 @@ int main() {
                         currentPiece->move(1, 0);
                 }
                 else if (event.key.code == sf::Keyboard::Down) {
-                    currentPiece->move(0, 1);
+                    // Check if the piece can move down
+                    bool canMoveDown = true;
+                    for (int i = 0; i < 4; ++i) {
+                        int blockX = currentPiece->getX(i);
+                        int blockY = currentPiece->getY(i);
+                        if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
+                            canMoveDown = false;
+                            break;
+                        }
+                    }
+                    if (canMoveDown) {
+                        currentPiece->move(0, 1);
+                    }
+                    else {
+                        // Lock the piece into the board
+                        for (int i = 0; i < 4; ++i) {
+                            int blockX = currentPiece->getX(i);
+                            int blockY = currentPiece->getY(i);
+                            board.setCell(blockY, blockX, currentPiece->getColor());
+                        }
+
+                        // Delete the current piece and set it to nullptr
+                        delete currentPiece;
+                        currentPiece = nullptr;
+                    }
                 }
                 else if (event.key.code == sf::Keyboard::Up) {
                     currentPiece->rotate();
@@ -732,5 +756,6 @@ int main() {
 
     return 0;
 }
+
 
 

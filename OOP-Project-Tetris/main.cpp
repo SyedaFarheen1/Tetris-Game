@@ -11,12 +11,30 @@ protected:
     sf::Color color;
     int offsetX = 50;
     int offsetY = 150;
-
+    bool is_active = false;
 public:
+    void setActive(bool val) { 
+        is_active = val; 
+    }
+    bool isActive() const { 
+        return is_active; 
+    }
     void setOffset(int x, int y) {
         offsetX = x;
         offsetY = y;
     }
+	int getX(int index) const {
+		return blockX[index];
+	}
+	int getY(int index) const {
+		return blockY[index];
+	}
+	int getOffsetX() const {
+		return offsetX;
+	}
+	int getOffsetY() const {
+		return offsetY;
+	}
     virtual void draw(sf::RenderWindow& window) = 0;
     virtual void move(int dx, int dy) = 0;
     virtual void rotate() = 0;
@@ -46,6 +64,7 @@ public:
     }
 
     void draw(sf::RenderWindow& window) override {
+		if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
             blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
             window.draw(blocks[i]);
@@ -53,6 +72,7 @@ public:
     }
 
     void move(int dx, int dy) override {
+		if (!is_active) return; // Only move if active
         for (int i = 0; i < 4; i++) {
             blockX[i] += dx;
             blockY[i] += dy;
@@ -60,7 +80,7 @@ public:
     }
 
     void rotate() override {
-
+		if (!is_active) return; // Only rotate if active
         rotationState = (rotationState + 1) % 4;
 
         int x = blockX[1];
@@ -122,6 +142,7 @@ public:
     }
 
     void draw(sf::RenderWindow& window) override {
+		if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
             blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
             window.draw(blocks[i]);
@@ -129,6 +150,7 @@ public:
     }
 
     void move(int dx, int dy) override {
+		if (!is_active) return; // Only move if active
         for (int i = 0; i < 4; i++) {
             blockX[i] += dx;
             blockY[i] += dy;
@@ -136,6 +158,7 @@ public:
     }
 
     void rotate() override {
+        if (!is_active) return; // Only rotate if active
 
         rotationState = (rotationState + 1) % 2;
 
@@ -184,6 +207,7 @@ public:
     }
 
     void draw(sf::RenderWindow& window) override {
+        if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
             blocks[i].setPosition(offsetX + blockX[i] * 30, offsetY + blockY[i] * 30);
             window.draw(blocks[i]);
@@ -191,6 +215,7 @@ public:
     }
 
     void move(int dx, int dy) override {
+        if (!is_active) return; // Only move if active
         for (int i = 0; i < 4; i++) {
             blockX[i] += dx;
             blockY[i] += dy;
@@ -198,8 +223,8 @@ public:
     }
 
     void rotate() override {
-        // O piece does not rotate
-        cout << "O piece does not rotate" << endl;
+        if (!is_active) return; // Only rotate if active
+        cout << "square piece does not rotate" << endl;
     }
 };
 
@@ -228,6 +253,7 @@ public:
     }
 
     void draw(sf::RenderWindow& window) override {
+        if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
             blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
             window.draw(blocks[i]);
@@ -235,6 +261,7 @@ public:
     }
 
     void move(int dx, int dy) override {
+        if (!is_active) return; // Only move if active
         for (int i = 0; i < 4; i++) {
             blockX[i] += dx;
             blockY[i] += dy;
@@ -242,6 +269,7 @@ public:
     }
 
     void rotate() override {
+        if (!is_active) return; // Only rotate if active
         int lx = blockX[1];
         int ly = blockY[1];
 
@@ -298,6 +326,7 @@ public:
     }
 
     void draw(sf::RenderWindow& window) override {
+        if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
             blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
             window.draw(blocks[i]);
@@ -305,6 +334,7 @@ public:
     }
 
     void move(int dx, int dy) override {
+        if (!is_active) return; // Only move if active
         for (int i = 0; i < 4; i++) {
             blockX[i] += dx;
             blockY[i] += dy;
@@ -312,6 +342,7 @@ public:
     }
 
     void rotate() override {
+        if (!is_active) return; // Only rotate if active
         int jx = blockX[1];
         int jy = blockY[1];
 
@@ -368,6 +399,7 @@ public:
     }
 
     void draw(sf::RenderWindow& window) override {
+        if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
             blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
             window.draw(blocks[i]);
@@ -375,6 +407,7 @@ public:
     }
 
     void move(int dx, int dy) override {
+        if (!is_active) return; // Only move if active
         for (int i = 0; i < 4; i++) {
             blockX[i] += dx;
             blockY[i] += dy;
@@ -382,6 +415,7 @@ public:
     }
 
     void rotate() override {
+        if (!is_active) return; // Only rotate if active
         int cx = blockX[1];
         int cy = blockY[1];
 
@@ -438,6 +472,7 @@ public:
     }
 
     void draw(sf::RenderWindow& window) override {
+        if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
             blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
             window.draw(blocks[i]);
@@ -445,6 +480,7 @@ public:
     }
 
     void move(int dx, int dy) override {
+        if (!is_active) return; // Only move if active
         for (int i = 0; i < 4; i++) {
             blockX[i] += dx;
             blockY[i] += dy;
@@ -452,6 +488,7 @@ public:
     }
 
     void rotate() override {
+        if (!is_active) return; // Only rotate if active
         int zx = blockX[1];
         int zy = blockY[1];
 
@@ -543,24 +580,22 @@ public:
 int main() {
     sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
 
-    Piece* tPiece = new T_Piece();
-    Piece* iPiece = new I_Piece();
-    Piece* sqPiece = new Sq_Piece();
-    Piece* lPiece = new L_Piece();
-    Piece* jPiece = new J_Piece();
-    Piece* sPiece = new S_Piece();
-    Piece* zPiece = new Z_Piece();
+    const int numPieces = 7;
+    Piece* pieces[numPieces];
+
+    pieces[0] = new T_Piece();
+    pieces[1] = new I_Piece();
+    pieces[2] = new Sq_Piece();
+    pieces[3] = new L_Piece();
+    pieces[4] = new J_Piece();
+    pieces[5] = new S_Piece();
+    pieces[6] = new Z_Piece();
+
+    Piece* currentPiece = nullptr;
+    sf::Clock dropClock;
+    float dropDelay = 0.5f;
 
     Board board;
-
-    tPiece->setOffset(50, 150);
-    iPiece->setOffset(200, 100);
-    sqPiece->setOffset(450, 200);
-    lPiece->setOffset(600, 300);
-   jPiece->setOffset(250, 300);
-   sPiece->setOffset(100, 300);
-   zPiece->setOffset(150, 200);
-
 
     while (window.isOpen()) {
         sf::Event event;
@@ -568,103 +603,62 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // moving t piece
-            if (event.type == sf::Event::KeyPressed) {
+            // Handle movement only for current active piece
+            if (currentPiece && event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Left)
-                    tPiece->move(-1, 0);
+                    currentPiece->move(-1, 0);
                 else if (event.key.code == sf::Keyboard::Right)
-                    tPiece->move(1, 0);
+                    currentPiece->move(1, 0);
                 else if (event.key.code == sf::Keyboard::Down)
-                    tPiece->move(0, 1);
+                    currentPiece->move(0, 1);
                 else if (event.key.code == sf::Keyboard::Up)
-                    tPiece->rotate();
-            }
-            //moving I piece
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left)
-                    iPiece->move(-1, 0);
-                else if (event.key.code == sf::Keyboard::Right)
-                    iPiece->move(1, 0);
-                else if (event.key.code == sf::Keyboard::Down)
-                    iPiece->move(0, 1);
-                else if (event.key.code == sf::Keyboard::Up)
-                    iPiece->rotate();
-            }
-            //moving square piece
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left)
-                    sqPiece->move(-1, 0);
-                else if (event.key.code == sf::Keyboard::Right)
-                    sqPiece->move(1, 0);
-                else if (event.key.code == sf::Keyboard::Down)
-                    sqPiece->move(0, 1);
-                else if (event.key.code == sf::Keyboard::Up)
-                    sqPiece->rotate();
-            }
-            //moving l piece
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left)
-                    lPiece->move(-1, 0);
-                else if (event.key.code == sf::Keyboard::Right)
-                    lPiece->move(1, 0);
-                else if (event.key.code == sf::Keyboard::Down)
-                    lPiece->move(0, 1);
-                else if (event.key.code == sf::Keyboard::Up)
-                    lPiece->rotate();
-            }
-            //moving j piece
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left)
-                    jPiece->move(-1, 0);
-                else if (event.key.code == sf::Keyboard::Right)
-                    jPiece->move(1, 0);
-                else if (event.key.code == sf::Keyboard::Down)
-                    jPiece->move(0, 1);
-                else if (event.key.code == sf::Keyboard::Up)
-                    jPiece->rotate();
-            }
-            //moving s piece
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left)
-                    sPiece->move(-1, 0);
-                else if (event.key.code == sf::Keyboard::Right)
-                    sPiece->move(1, 0);
-                else if (event.key.code == sf::Keyboard::Down)
-                    sPiece->move(0, 1);
-                else if (event.key.code == sf::Keyboard::Up)
-                    sPiece->rotate();
-            }
-            //moving z piece
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left)
-                    zPiece->move(-1, 0);
-                else if (event.key.code == sf::Keyboard::Right)
-                    zPiece->move(1, 0);
-                else if (event.key.code == sf::Keyboard::Down)
-                    zPiece->move(0, 1);
-                else if (event.key.code == sf::Keyboard::Up)
-                    zPiece->rotate();
+                    currentPiece->rotate();
             }
         }
 
+        // Spawn new piece if none is active
+        if (!currentPiece) {
+            int idx = rand() % numPieces;
+            currentPiece = pieces[idx];
+            currentPiece->setOffset(50, 150);
+            currentPiece->setActive(true);
+            dropClock.restart();
+        }
+
+        // Auto-drop the active piece
+        if (currentPiece && dropClock.getElapsedTime().asSeconds() >= dropDelay) {
+            currentPiece->move(0, 1); // Move down
+            dropClock.restart();
+
+            // Simple bottom check — stop at bottom row (adjust based on your grid size)
+            bool atBottom = false;
+            for (int i = 0; i < 4; ++i) {
+                int yBlock = currentPiece->getY(i) + currentPiece->getOffsetY() / 30;
+                if (yBlock >= 19) {  // 20 rows = index 0 to 19
+                    atBottom = true;
+                    break;
+                }
+            }
+
+            if (atBottom) {
+                currentPiece->setActive(false);
+                currentPiece = nullptr;
+            }
+        }
+
+        // Draw everything
         window.clear(sf::Color::Black);
-        board.draw(window);         // Draw board with boundaries
-        tPiece->draw(window);
-        iPiece->draw(window);
-        sqPiece->draw(window);
-        lPiece->draw(window);
-        jPiece->draw(window);
-        sPiece->draw(window);
-        zPiece->draw(window);
+        board.draw(window);
+        for (int i = 0; i < numPieces; ++i) {
+            pieces[i]->draw(window);
+        }
         window.display();
     }
 
-    delete tPiece;
-    delete iPiece;
-    delete sqPiece;
-    delete lPiece;
-    delete jPiece;
-    delete sPiece;
-    delete zPiece;
+    // Cleanup
+    for (int i = 0; i < numPieces; ++i)
+        delete pieces[i];
+
     return 0;
 }
+

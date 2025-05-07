@@ -312,7 +312,35 @@ public:
     }
 
     void rotate() override {
-        cout << "Rotating J piece" << endl;
+        int jx = blockX[1];
+        int jy = blockY[1];
+
+        rotationState = (rotationState + 1) % 4;
+
+        if (rotationState == 0) {
+            blockX[0] = jx;  blockY[0] = jy - 1;
+            blockX[1] = jx;  blockY[1] = jy;
+            blockX[2] = jx;  blockY[2] = jy + 1;
+            blockX[3] = jx - 1;  blockY[3] = jy + 1;
+        }
+        else if (rotationState == 1) {
+            blockX[0] = jx + 1;  blockY[0] = jy;
+            blockX[1] = jx;  blockY[1] = jy;
+            blockX[2] = jx - 1;  blockY[2] = jy;
+            blockX[3] = jx - 1;  blockY[3] = jy - 1;
+        }
+        else if (rotationState == 2) {
+            blockX[0] = jx;  blockY[0] = jy + 1;
+            blockX[1] = jx;  blockY[1] = jy;
+            blockX[2] = jx;  blockY[2] = jy - 1;
+            blockX[3] = jx + 1;  blockY[3] = jy - 1;
+        }
+        else if (rotationState == 3) {
+            blockX[0] = jx - 1;  blockY[0] = jy;
+            blockX[1] = jx;  blockY[1] = jy;
+            blockX[2] = jx + 1;  blockY[2] = jy;
+            blockX[3] = jx + 1;  blockY[3] = jy + 1;
+        }
     }
 };
 

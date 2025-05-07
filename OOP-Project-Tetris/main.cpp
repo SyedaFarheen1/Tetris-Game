@@ -242,8 +242,35 @@ public:
     }
 
     void rotate() override {
-        // Basic placeholder; real rotation logic would update blockX/Y based on state
-        cout << "Rotating L piece" << endl;
+        int lx = blockX[1];
+        int ly = blockY[1];
+
+        rotationState = (rotationState + 1) % 4;
+
+        if (rotationState == 0) {
+            blockX[0] = lx;  blockY[0] = ly - 1;
+            blockY[1] = lx;  blockY[1] = ly;
+            blockX[2] = lx;  blockY[2] = ly + 1;
+            blockX[3] = lx + 1;  blockY[3] = ly + 1;
+        }
+        else if (rotationState == 1) {
+            blockX[0] = lx - 1;  blockY[0] = ly;
+            blockX[1] = lx;      blockY[1] = ly;
+            blockX[2] = lx + 1;  blockY[2] = ly;
+            blockX[3] = lx + 1;  blockY[3] = ly - 1;
+        }
+        else if (rotationState == 2) {
+            blockX[0] = lx;  blockY[0] = ly + 1;
+            blockX[1] = lx;  blockY[1] = ly;
+            blockX[2] = lx;  blockY[2] = ly - 1;
+            blockX[3] = lx - 1;  blockY[3] = ly - 1;
+        }
+        else if (rotationState == 3) {
+            blockX[0] = lx + 1;  blockY[0] = ly;
+            blockX[1] = lx;  blockY[1] = ly;
+            blockX[2] = lx - 1;  blockY[2] = ly;
+            blockX[3] = lx - 1;  blockY[3] = ly + 1;
+        }
     }
 };
 

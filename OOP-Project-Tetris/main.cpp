@@ -597,7 +597,7 @@ public:
     sf::Color getCell(int row, int col) const {
         if (row >= 0 && row < rows && col >= 0 && col < cols)
             return board[row][col];
-        return sf::Color::Red; // Invalid (you can change this)
+        return sf::Color::Black; // Invalid 
     }
 
     void setCell(int row, int col, sf::Color color) {
@@ -610,7 +610,6 @@ public:
 int main() {
     sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
 
-    // Create templates
     Piece* templates[7];
     templates[0] = new T_Piece();
     templates[1] = new I_Piece();
@@ -644,47 +643,52 @@ int main() {
             }
         }
 
-        // Spawn a new piece if needed
-        if (!currentPiece) {
-            int index = rand() % 7;
-            currentPiece = templates[index]->clone();
-            currentPiece->setOffset(50, 150);
-            currentPiece->setActive(true);
-            dropClock.restart();
-        }
-
-        // Auto-drop
+        // Auto-drop if there is a current piece
         if (currentPiece && dropClock.getElapsedTime().asSeconds() >= dropDelay) {
             bool atBottom = false;
 
-            // Check future position
+            // Check if the piece can move down
             for (int i = 0; i < 4; ++i) {
                 int blockX = currentPiece->getX(i);
                 int blockY = currentPiece->getY(i);
-                if (board.getCell(blockY + 1, blockX) != sf::Color::Black) {
+
+                // Check if the block is at the bottom or collides with another piece
+                if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
                     atBottom = true;
                     break;
                 }
             }
 
             if (atBottom) {
+                // Lock the piece into the board
                 for (int i = 0; i < 4; ++i) {
                     int blockX = currentPiece->getX(i);
                     int blockY = currentPiece->getY(i);
                     board.setCell(blockY, blockX, currentPiece->getColor());
-
                 }
+
+                // Delete the current piece and set it to nullptr
                 delete currentPiece;
                 currentPiece = nullptr;
             }
             else {
-                currentPiece->move(0, 1); // move down
+                // Move the piece down
+                currentPiece->move(0, 1);
             }
 
             dropClock.restart();
         }
 
-        // Draw
+        // Spawn a new piece if there is none active
+        if (!currentPiece) {
+            int index = rand() % 7; // Randomly select a piece
+            currentPiece = templates[index]->clone(); // Use the clone method to create a new piece
+            currentPiece->setOffset(50, 150); // Set the initial position
+            currentPiece->setActive(true); // Activate the piece
+            dropClock.restart(); // Restart the drop timer
+        }
+
+        // Drawing
         window.clear(sf::Color::Black);
         board.draw(window);
         if (currentPiece)
@@ -695,6 +699,7 @@ int main() {
     // Cleanup
     for (int i = 0; i < 7; ++i)
         delete templates[i];
+    delete currentPiece;
 
     return 0;
 }

@@ -1,4 +1,6 @@
 #include <SFML/Graphics.hpp>
+#include <cstdlib> // For rand() and srand()
+#include <ctime>   // For time()
 #include <iostream>
 
 using namespace std;
@@ -606,7 +608,6 @@ public:
     }
 };
 
-
 int main() {
     sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
 
@@ -625,8 +626,27 @@ int main() {
 
     Board board;
 
-    // Seed the random number generator to ensure different sequences each time
+    // Seed the random number generator
     srand(static_cast<unsigned int>(time(nullptr)));
+
+    // Bag system using an array
+    int bag[7];
+    int bagIndex = 0;
+
+    // Function to shuffle the bag
+    auto shuffleBag = [&]() {
+        for (int i = 0; i < 7; ++i) {
+            bag[i] = i;
+        }
+        for (int i = 6; i > 0; --i) {
+            int j = rand() % (i + 1);
+            std::swap(bag[i], bag[j]);
+        }
+        bagIndex = 0; // Reset the index
+        };
+
+    // Initialize the bag
+    shuffleBag();
 
     while (window.isOpen()) {
         sf::Event event;
@@ -734,7 +754,10 @@ int main() {
 
         // Spawn a new piece if there is none active
         if (!currentPiece) {
-            int index = rand() % 7; // Randomly select a piece
+            if (bagIndex >= 7) {
+                shuffleBag(); // Refill and shuffle the bag when it's empty
+            }
+            int index = bag[bagIndex++]; // Get the next piece from the bag
             currentPiece = templates[index]->clone(); // Use the clone method to create a new piece
             currentPiece->setOffset(50, 150); // Set the initial position
             currentPiece->setActive(true); // Activate the piece
@@ -756,6 +779,7 @@ int main() {
 
     return 0;
 }
+
 
 
 

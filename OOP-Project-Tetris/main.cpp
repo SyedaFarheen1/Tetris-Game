@@ -194,7 +194,7 @@ public:
 class Sq_Piece : public Piece {
 private:
     sf::RectangleShape blocks[4];
-    int rotationState; // O piece doesn’t rotate, but keeping for consistency
+    int rotationState; // Square piece doesn’t rotate, but keeping for consistency
 
 public:
     Sq_Piece() {

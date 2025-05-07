@@ -522,60 +522,70 @@ public:
 };
 
 
-class Board {
-private:
-    static const int rows = 20;
-    static const int cols = 10;
-    static const int cellSize = 30;
+class Board {  
+private:  
+   static const int rows = 20;  
+   static const int cols = 10;  
+   static const int cellSize = 30;  
 
-    int board[rows][cols];               // Main game grid
-    int offsetX;                         // X offset for board position
-    int offsetY;                         // Y offset
-    sf::RectangleShape cell;            // Used to draw each cell
+   int board[rows][cols];               // Main game grid  
+   int offsetX;                         // X offset for board position  
+   int offsetY;                         // Y offset  
+   sf::RectangleShape cell;            // Used to draw each cell  
 
-public:
-    // Constructor with optional offsets
-    Board(int x = 50, int y = 150) : offsetX(x), offsetY(y) {
-        // Initialize board with empty cells
-        for (int i = 0; i < rows; ++i)
-            for (int j = 0; j < cols; ++j)
-                board[i][j] = 0;
+public:  
+   // Constructor with optional offsets  
+   Board(int x = 50, int y = 150) : offsetX(x), offsetY(y) {  
+       // Initialize board with empty cells  
+       for (int i = 0; i < rows; ++i)  
+           for (int j = 0; j < cols; ++j)  
+               board[i][j] = 0;  
 
-        cell.setSize(sf::Vector2f(cellSize, cellSize));
-        cell.setOutlineThickness(1);
-        cell.setOutlineColor(sf::Color(80, 80, 80));
-    }
+       cell.setSize(sf::Vector2f(cellSize, cellSize));  
+       cell.setOutlineThickness(1);  
+       cell.setOutlineColor(sf::Color(80, 80, 80));  
+   }  
 
-    // Draw the board: boundaries + empty cells
-    void draw(sf::RenderWindow& window) {
-        // Draw boundaries (gray border)
-        for (int row = 0; row < rows + 2; row++) {
-            for (int col = 0; col < cols + 2; col++) {
-                if (row == 0 || row == rows + 1 || col == 0 || col == cols + 1) {
-                    cell.setPosition(offsetX + col * cellSize, offsetY + row * cellSize);
-                    cell.setFillColor(sf::Color(128, 128, 128)); // Gray
-                    window.draw(cell);
-                }
-            }
-        }
+   // Draw the board: boundaries + empty cells  
+   void draw(sf::RenderWindow& window) {  
+       // Draw boundaries (gray border)  
+       for (int row = 0; row < rows + 2; row++) {  
+           for (int col = 0; col < cols + 2; col++) {  
+               if (row == 0 || row == rows + 1 || col == 0 || col == cols + 1) {  
+                   cell.setPosition(offsetX + col * cellSize, offsetY + row * cellSize);  
+                   cell.setFillColor(sf::Color(128, 128, 128)); // Gray  
+                   window.draw(cell);  
+               }  
+           }  
+       }  
 
-        // Draw grid cells
-        for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < cols; ++col) {
-                cell.setPosition(offsetX + (col + 1) * cellSize, offsetY + (row + 1) * cellSize);
-                if (board[row][col] == 0)
-                    cell.setFillColor(sf::Color::Black); // Empty cell
-                else
-                    cell.setFillColor(sf::Color::White); // Filled cell (temporary for now)
+       // Draw grid cells  
+       for (int row = 0; row < rows; ++row) {  
+           for (int col = 0; col < cols; ++col) {  
+               cell.setPosition(offsetX + (col + 1) * cellSize, offsetY + (row + 1) * cellSize);  
+               if (board[row][col] == 0)  
+                   cell.setFillColor(sf::Color::Black); // Empty cell  
+               else  
+                   cell.setFillColor(sf::Color::White); // Filled cell (temporary for now)  
 
-                window.draw(cell);
-            }
-        }
-    }
+               window.draw(cell);  
+           }  
+       }  
+   }  
+
+   // Getter for the value of a cell  
+   int getCell(int row, int col) const {
+       if (row >= 0 && row < rows && col >= 0 && col < cols)
+           return board[row][col];
+       return -1; // Return an invalid value for out-of-bounds access
+   }
+
+   //  to update the board array
+   void setCell(int row, int col, int value) {
+       if (row >= 0 && row < rows && col >= 0 && col < cols)
+           board[row][col] = value;
+   }
 };
-
-
-
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
@@ -618,8 +628,8 @@ int main() {
 
         // Spawn new piece if none is active
         if (!currentPiece) {
-            int idx = rand() % numPieces;
-            currentPiece = pieces[idx];
+            int index = rand() % numPieces;
+            currentPiece = pieces[index];
             currentPiece->setOffset(50, 150);
             currentPiece->setActive(true);
             dropClock.restart();
@@ -630,21 +640,39 @@ int main() {
             currentPiece->move(0, 1); // Move down
             dropClock.restart();
 
-            // Simple bottom check — stop at bottom row (adjust based on your grid size)
             bool atBottom = false;
+
+            // Check if the piece has reached the bottom or collided with another piece
             for (int i = 0; i < 4; ++i) {
-                int yBlock = currentPiece->getY(i) + currentPiece->getOffsetY() / 30;
-                if (yBlock >= 19) {  // 20 rows = index 0 to 19
+                int blockX = currentPiece->getX(i);
+                int blockY = currentPiece->getY(i);
+
+                // Check if the block is at the bottom of the grid or collides with a filled cell
+                if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != 0) {
                     atBottom = true;
                     break;
                 }
             }
 
             if (atBottom) {
+                // Stack the piece on the board
+                for (int i = 0; i < 4; ++i) {
+                    int blockX = currentPiece->getX(i);
+                    int blockY = currentPiece->getY(i);
+                    board.setCell(blockY, blockX, 1); // Mark the cell as filled
+                }
+
+                // Deactivate the current piece
                 currentPiece->setActive(false);
-                currentPiece = nullptr;
+
+                // Spawn a new piece
+                int index = rand() % numPieces;
+                currentPiece = pieces[index];
+                currentPiece->setOffset(50, 150);
+                currentPiece->setActive(true);
             }
         }
+
 
         // Draw everything
         window.clear(sf::Color::Black);

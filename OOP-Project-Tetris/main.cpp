@@ -106,10 +106,12 @@ private:
 public:
     I_Piece() {
         color = sf::Color::Cyan;
+
         blockX[0] = 5; blockY[0] = 0;
         blockX[1] = 5; blockY[1] = 1;
         blockX[2] = 5; blockY[2] = 2;
         blockX[3] = 5; blockY[3] = 3;
+
 
         for (int i = 0; i < 4; i++) {
             blocks[i].setSize(sf::Vector2f(30, 30));
@@ -134,6 +136,7 @@ public:
     }
 
     void rotate() override {
+
         rotationState = (rotationState + 1) % 2;
 
         int Ix = blockX[1];
@@ -156,7 +159,219 @@ public:
     }
 };
 
+//Square-piece
+class Sq_Piece : public Piece {
+private:
+    sf::RectangleShape blocks[4];
+    int rotationState; // O piece doesn’t rotate, but keeping for consistency
 
+public:
+    Sq_Piece() {
+        color = sf::Color::Yellow;
+
+        // A 2x2 square in the top-middle of the board
+        blockX[0] = 4; blockY[0] = 0;
+        blockX[1] = 5; blockY[1] = 0;
+        blockX[2] = 4; blockY[2] = 1;
+        blockX[3] = 5; blockY[3] = 1;
+
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setFillColor(color);
+        }
+
+        rotationState = 0;
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setPosition(offsetX + blockX[i] * 30, offsetY + blockY[i] * 30);
+            window.draw(blocks[i]);
+        }
+    }
+
+    void move(int dx, int dy) override {
+        for (int i = 0; i < 4; i++) {
+            blockX[i] += dx;
+            blockY[i] += dy;
+        }
+    }
+
+    void rotate() override {
+        // O piece does not rotate
+        cout << "O piece does not rotate" << endl;
+    }
+};
+
+// L_Piece
+class L_Piece : public Piece {
+private:
+    sf::RectangleShape blocks[4];
+    int rotationState;
+
+public:
+    L_Piece() {
+        color = sf::Color(255, 165, 0); // Orange
+
+        // Initial coordinates (L shape)
+        blockX[0] = 4; blockY[0] = 0;
+        blockX[1] = 5; blockY[1] = 0;
+        blockX[2] = 6; blockY[2] = 0;
+        blockX[3] = 6; blockY[3] = 1;
+
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setFillColor(color);
+        }
+
+        rotationState = 0;
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
+            window.draw(blocks[i]);
+        }
+    }
+
+    void move(int dx, int dy) override {
+        for (int i = 0; i < 4; i++) {
+            blockX[i] += dx;
+            blockY[i] += dy;
+        }
+    }
+
+    void rotate() override {
+        // Basic placeholder; real rotation logic would update blockX/Y based on state
+        cout << "Rotating L piece" << endl;
+    }
+};
+
+//J-piece
+class J_Piece : public Piece {
+private:
+    sf::RectangleShape blocks[4];
+    int rotationState;
+
+public:
+    J_Piece() {
+        color = sf::Color(0, 0, 255); // Blue
+
+        blockX[0] = 4; blockY[0] = 0;
+        blockX[1] = 5; blockY[1] = 0;
+        blockX[2] = 6; blockY[2] = 0;
+        blockX[3] = 4; blockY[3] = 1;
+
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setFillColor(color);
+        }
+
+        rotationState = 0;
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
+            window.draw(blocks[i]);
+        }
+    }
+
+    void move(int dx, int dy) override {
+        for (int i = 0; i < 4; i++) {
+            blockX[i] += dx;
+            blockY[i] += dy;
+        }
+    }
+
+    void rotate() override {
+        cout << "Rotating J piece" << endl;
+    }
+};
+
+//S-piece
+class S_Piece : public Piece {
+private:
+    sf::RectangleShape blocks[4];
+    int rotationState;
+
+public:
+    S_Piece() {
+        color = sf::Color::Green;
+
+        blockX[0] = 5; blockY[0] = 0;
+        blockX[1] = 6; blockY[1] = 0;
+        blockX[2] = 4; blockY[2] = 1;
+        blockX[3] = 5; blockY[3] = 1;
+
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setFillColor(color);
+        }
+
+        rotationState = 0;
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
+            window.draw(blocks[i]);
+        }
+    }
+
+    void move(int dx, int dy) override {
+        for (int i = 0; i < 4; i++) {
+            blockX[i] += dx;
+            blockY[i] += dy;
+        }
+    }
+
+    void rotate() override {
+        cout << "Rotating S piece" << endl;
+    }
+};
+
+//Z-piece
+class Z_Piece : public Piece {
+private:
+    sf::RectangleShape blocks[4];
+    int rotationState;
+
+public:
+    Z_Piece() {
+        color = sf::Color::Red;
+
+        blockX[0] = 4; blockY[0] = 0;
+        blockX[1] = 5; blockY[1] = 0;
+        blockX[2] = 5; blockY[2] = 1;
+        blockX[3] = 6; blockY[3] = 1;
+
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setFillColor(color);
+        }
+
+        rotationState = 0;
+    }
+
+    void draw(sf::RenderWindow& window) override {
+        for (int i = 0; i < 4; i++) {
+            blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
+            window.draw(blocks[i]);
+        }
+    }
+
+    void move(int dx, int dy) override {
+        for (int i = 0; i < 4; i++) {
+            blockX[i] += dx;
+            blockY[i] += dy;
+        }
+    }
+
+    void rotate() override {
+        cout << "Rotating Z piece" << endl;
+    }
+};
 
 
 class Board {
@@ -219,10 +434,22 @@ int main() {
 
     Piece* tPiece = new T_Piece();
     Piece* iPiece = new I_Piece();
+    Piece* sqPiece = new Sq_Piece();
+    Piece* lPiece = new L_Piece();
+    Piece* jPiece = new J_Piece();
+    Piece* sPiece = new S_Piece();
+    Piece* zPiece = new Z_Piece();
+
     Board board;
 
     tPiece->setOffset(50, 150);
     iPiece->setOffset(200, 100);
+    sqPiece->setOffset(450, 200);
+    lPiece->setOffset(600, 300);
+   jPiece->setOffset(250, 300);
+   sPiece->setOffset(100, 300);
+   zPiece->setOffset(150, 200);
+
 
     while (window.isOpen()) {
         sf::Event event;
@@ -252,16 +479,81 @@ int main() {
                 else if (event.key.code == sf::Keyboard::Up)
                     iPiece->rotate();
             }
+            //moving square piece
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Left)
+                    sqPiece->move(-1, 0);
+                else if (event.key.code == sf::Keyboard::Right)
+                    sqPiece->move(1, 0);
+                else if (event.key.code == sf::Keyboard::Down)
+                    sqPiece->move(0, 1);
+                else if (event.key.code == sf::Keyboard::Up)
+                    sqPiece->rotate();
+            }
+            //moving l piece
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Left)
+                    lPiece->move(-1, 0);
+                else if (event.key.code == sf::Keyboard::Right)
+                    lPiece->move(1, 0);
+                else if (event.key.code == sf::Keyboard::Down)
+                    lPiece->move(0, 1);
+                else if (event.key.code == sf::Keyboard::Up)
+                    lPiece->rotate();
+            }
+            //moving j piece
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Left)
+                    jPiece->move(-1, 0);
+                else if (event.key.code == sf::Keyboard::Right)
+                    jPiece->move(1, 0);
+                else if (event.key.code == sf::Keyboard::Down)
+                    jPiece->move(0, 1);
+                else if (event.key.code == sf::Keyboard::Up)
+                    jPiece->rotate();
+            }
+            //moving s piece
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Left)
+                    sPiece->move(-1, 0);
+                else if (event.key.code == sf::Keyboard::Right)
+                    sPiece->move(1, 0);
+                else if (event.key.code == sf::Keyboard::Down)
+                    sPiece->move(0, 1);
+                else if (event.key.code == sf::Keyboard::Up)
+                    sPiece->rotate();
+            }
+            //moving z piece
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Left)
+                    zPiece->move(-1, 0);
+                else if (event.key.code == sf::Keyboard::Right)
+                    zPiece->move(1, 0);
+                else if (event.key.code == sf::Keyboard::Down)
+                    zPiece->move(0, 1);
+                else if (event.key.code == sf::Keyboard::Up)
+                    zPiece->rotate();
+            }
         }
 
         window.clear(sf::Color::Black);
         board.draw(window);         // Draw board with boundaries
         tPiece->draw(window);
         iPiece->draw(window);
+        sqPiece->draw(window);
+        lPiece->draw(window);
+        jPiece->draw(window);
+        sPiece->draw(window);
+        zPiece->draw(window);
         window.display();
     }
 
     delete tPiece;
     delete iPiece;
+    delete sqPiece;
+    delete lPiece;
+    delete jPiece;
+    delete sPiece;
+    delete zPiece;
     return 0;
 }

@@ -382,7 +382,35 @@ public:
     }
 
     void rotate() override {
-        cout << "Rotating S piece" << endl;
+        int cx = blockX[1];
+        int cy = blockY[1];
+
+        rotationState = (rotationState + 1) % 4;
+
+        if (rotationState == 0) {
+            blockX[0] = cx + 1;  blockY[0] = cy;
+            blockX[1] = cx;      blockY[1] = cy;
+            blockX[2] = cx;      blockY[2] = cy + 1;
+            blockX[3] = cx - 1;  blockY[3] = cy + 1;
+        }
+        if (rotationState == 1) {
+            blockX[0] = cx;      blockY[0] = cy + 1;
+            blockX[1] = cx;      blockY[1] = cy;
+            blockX[2] = cx - 1;  blockY[2] = cy;
+            blockX[3] = cx - 1;  blockY[3] = cy - 1;
+        }
+        if (rotationState == 2) {
+            blockX[0] = cx - 1;  blockY[0] = cy;
+            blockX[1] = cx;      blockY[1] = cy;
+            blockX[2] = cx;      blockY[2] = cy - 1;
+            blockX[3] = cx + 1;  blockY[3] = cy - 1;
+        }
+        if (rotationState == 3) {
+            blockX[0] = cx;      blockY[0] = cy - 1;
+            blockX[1] = cx;      blockY[1] = cy;
+            blockX[2] = cx + 1;  blockY[2] = cy;
+            blockX[3] = cx + 1;  blockY[3] = cy + 1;
+        }
     }
 };
 
@@ -424,7 +452,35 @@ public:
     }
 
     void rotate() override {
-        cout << "Rotating Z piece" << endl;
+        int zx = blockX[1];
+        int zy = blockY[1];
+
+        rotationState = (rotationState + 1) % 4;
+
+        if (rotationState == 0) {
+            blockX[0] = zx - 1;  blockY[0] = zy;
+            blockX[1] = zx;      blockY[1] = zy;
+            blockX[2] = zx;      blockY[2] = zy + 1;
+            blockX[3] = zx + 1;  blockY[3] = zy + 1;
+        }
+        else if (rotationState == 1) {
+            blockX[0] = zx;      blockY[0] = zy - 1;
+            blockX[1] = zx;      blockY[1] = zy;
+            blockX[2] = zx - 1;  blockY[2] = zy;
+            blockX[3] = zx - 1;  blockY[3] = zy + 1;
+        }
+        else if (rotationState == 2) {
+            blockX[0] = zx + 1;      blockY[0] = zy;
+            blockX[1] = zx;          blockY[1] = zy;
+            blockX[2] = zx;          blockY[2] = zy - 1;
+            blockX[3] = zx - 1;      blockY[3] = zy - 1;
+        }
+        else if (rotationState == 3) {
+            blockX[0] = zx;      blockY[0] = zy + 1;
+            blockX[1] = zx;      blockY[1] = zy;
+            blockX[2] = zx + 1;  blockY[2] = zy;
+            blockX[3] = zx + 1;  blockY[3] = zy - 1;
+        }
     }
 };
 

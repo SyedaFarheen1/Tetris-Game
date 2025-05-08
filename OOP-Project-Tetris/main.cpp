@@ -3,6 +3,8 @@
 
 using namespace std;
 
+
+
 // Base class: Piece
 class Piece {
 protected:
@@ -575,26 +577,50 @@ public:
 };
 
 
+bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
+    sf::Text start("Press S to Start", font, 32);
+    start.setFillColor(sf::Color::Yellow);
+    start.setPosition(280, 250);
 
+    sf::Text exit("Press Esc to Exit", font, 32);
+    exit.setFillColor(sf::Color::Red);
+    exit.setPosition(280, 320);
 
-int main() {
-    sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::S) {
+                    return true;
+                }
+                else if (event.key.code == sf::Keyboard::Escape)
+                    return false;
+
+            }
+        }
+
+        window.clear(sf::Color::Black);
+        window.draw(start);
+        window.draw(exit);
+        window.display();
+    }
+    return false;
+}
+
+void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
 
     const int numPieces = 7;
-    Piece* pieces[numPieces];
-
-    pieces[0] = new T_Piece();
-    pieces[1] = new I_Piece();
-    pieces[2] = new Sq_Piece();
-    pieces[3] = new L_Piece();
-    pieces[4] = new J_Piece();
-    pieces[5] = new S_Piece();
-    pieces[6] = new Z_Piece();
+    Piece* pieces[numPieces] = {
+        new T_Piece(), new I_Piece(), new Sq_Piece(), new L_Piece(),
+        new J_Piece(), new S_Piece(), new Z_Piece()
+    };
 
     Piece* currentPiece = nullptr;
     sf::Clock dropClock;
     float dropDelay = 0.5f;
-
     Board board;
 
     while (window.isOpen()) {
@@ -651,13 +677,34 @@ int main() {
         board.draw(window);
         for (int i = 0; i < numPieces; ++i) {
             pieces[i]->draw(window);
+            window.display();
         }
-        window.display();
+
     }
 
     // Cleanup
     for (int i = 0; i < numPieces; ++i)
         delete pieces[i];
+
+}
+
+int main() {
+
+    srand(static_cast<unsigned>(time(nullptr)));
+
+    sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
+
+    sf::Font font;
+    if (!font.loadFromFile("asset/Roboto_SemiCondensed-Light.ttf")) {
+        std::cerr << "Could not load font.\n";
+        return -1;
+    }
+
+    if (showStartScreen(window, font)){
+        runGameLoop(window, font);
+    }
+
+    
 
     return 0;
 }

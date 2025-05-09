@@ -242,10 +242,6 @@ public:
     Piece* clone() const override {
         return new Sq_Piece(*this); // Return a new instance of Sq_Piece
     }
-
-    Piece* clone() const override {
-        return new Sq_Piece(*this); // Return a new instance of Sq_Piece
-    }
 };
 
 

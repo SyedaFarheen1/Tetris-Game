@@ -563,6 +563,8 @@ private:
     int offsetY;                       // Y offset
     sf::RectangleShape cell;          // Used to draw each cell
 
+	int score;
+
 public:
     Board(int x = 50, int y = 150) : offsetX(x), offsetY(y) {
         // Initialize all cells to transparent
@@ -611,6 +613,7 @@ public:
             board[row][col] = color;
     }
     void checkAndClearLines() {
+        int linesCleared = 0;
         for (int row = 0; row < rows; ++row) {
             bool isFull = true;
 
@@ -622,6 +625,7 @@ public:
             }
 
             if (isFull) {
+				++linesCleared;
                 // clear full lines
                 for (int r = row; r > 0; --r) {
                     for (int col = 0; col < cols; ++col) {
@@ -637,6 +641,14 @@ public:
                 ++row;
             }
         }
+        if (linesCleared == 1) 
+            score += 100;
+        else if (linesCleared == 2) 
+            score += 300;
+        else if (linesCleared == 3) 
+            score += 500;
+        else if (linesCleared == 4) 
+            score += 800;
     }
 };
 

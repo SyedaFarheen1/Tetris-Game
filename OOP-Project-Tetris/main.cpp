@@ -622,7 +622,7 @@ public:
             }
 
             if (isFull) {
-                // Same logic from your clearFullLines
+                // clear full lines
                 for (int r = row; r > 0; --r) {
                     for (int col = 0; col < cols; ++col) {
                         board[r][col] = board[r - 1][col];
@@ -633,7 +633,7 @@ public:
                     board[0][col] = sf::Color::Transparent;
                 }
 
-                // Since one row was removed, check this row again
+                // Check the same row again since it now contains the row above
                 ++row;
             }
         }

@@ -7,8 +7,8 @@ using namespace std;
 // Base class: Piece
 class Piece {
 protected:
-    int blockX[4];
-    int blockY[4];
+    int blockX[4] = { 0 };
+    int blockY[4] = { 0 };
     sf::Color color;
     int offsetX = 50;
     int offsetY = 150;
@@ -568,10 +568,11 @@ private:
 public:
     Board(int x = 50, int y = 150) : offsetX(x), offsetY(y) {
         // Initialize all cells to transparent
-        for (int i = 0; i < rows; ++i)
+        for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j)
                 board[i][j] = sf::Color::Transparent;
-
+        }
+		score = 0;
         cell.setSize(sf::Vector2f(cellSize, cellSize));
         cell.setOutlineThickness(1);
         cell.setOutlineColor(sf::Color(80, 80, 80));

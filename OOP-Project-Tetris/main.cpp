@@ -2,7 +2,6 @@
 #include <cstdlib> // For rand() and srand()
 #include <ctime>   // For time()
 #include <iostream>
-
 using namespace std;
 
 // Base class: Piece
@@ -41,7 +40,7 @@ public:
     virtual void move(int dx, int dy) = 0;
     virtual void rotate() = 0;
     virtual Piece* clone() const = 0;  // Pure virtual clone
-	virtual sf::Color getColor() const { return color; }
+    virtual sf::Color getColor() const { return color; }
     virtual ~Piece() {}
 };
 
@@ -122,6 +121,7 @@ public:
 	Piece* clone() const override {
 		return new T_Piece(*this); // Return a new instance of T_Piece
 	}
+
 };
 
 // Derived class: I_Piece
@@ -196,7 +196,7 @@ public:
 class Sq_Piece : public Piece {
 private:
     sf::RectangleShape blocks[4];
-    int rotationState; // Square piece doesn’t rotate, but keeping for consistency
+    int rotationState; // Square piece doesnâ€™t rotate, but keeping for consistency
 
 public:
     Sq_Piece() {
@@ -237,6 +237,10 @@ public:
         if (!is_active) return; // Only rotate if active
         // Square piece does not rotate
         cout << "Square piece does not rotate" << endl;
+    }
+
+    Piece* clone() const override {
+        return new Sq_Piece(*this); // Return a new instance of Sq_Piece
     }
 
     Piece* clone() const override {
@@ -469,9 +473,10 @@ public:
             blockX[3] = cx + 1;  blockY[3] = cy + 1;
         }
     }
+
 	Piece* clone() const override {
 		return new S_Piece(*this); // Return a new instance of S_Piece
-	}
+  }
 };
 
 //Z-piece
@@ -599,7 +604,6 @@ public:
             }
         }
     }
-
     sf::Color getCell(int row, int col) const {
         if (row >= 0 && row < rows && col >= 0 && col < cols)
             return board[row][col];
@@ -612,46 +616,15 @@ public:
     }
 };
 
-/* 
-int main() {
-    sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
 
-    Piece* templates[7];
-    templates[0] = new T_Piece();
-    templates[1] = new I_Piece();
-    templates[2] = new Sq_Piece();
-    templates[3] = new L_Piece();
-    templates[4] = new J_Piece();
-    templates[5] = new S_Piece();
-    templates[6] = new Z_Piece();
+bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
+    sf::Text start("Press S to Start", font, 32);
+    start.setFillColor(sf::Color::Yellow);
+    start.setPosition(280, 250);
 
-    Piece* currentPiece = nullptr;
-    sf::Clock dropClock;
-    float dropDelay = 0.5f;
-
-    Board board;
-
-    // Seed the random number generator
-    srand(static_cast<unsigned int>(time(nullptr)));
-
-    // Bag system using an array
-    int bag[7];
-    int bagIndex = 0;
-
-    // Function to shuffle the bag
-    auto shuffleBag = [&]() {
-        for (int i = 0; i < 7; ++i) {
-            bag[i] = i;
-        }
-        for (int i = 6; i > 0; --i) {
-            int j = rand() % (i + 1);
-            std::swap(bag[i], bag[j]);
-        }
-        bagIndex = 0; // Reset the index
-        };
-
-    // Initialize the bag
-    shuffleBag();
+    sf::Text exit("Press Esc to Exit", font, 32);
+    exit.setFillColor(sf::Color::Red);
+    exit.setPosition(280, 320);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -659,135 +632,25 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            if (currentPiece && event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left) {
-                    // Check if the piece can move left
-                    bool canMoveLeft = true;
-                    for (int i = 0; i < 4; ++i) {
-                        int blockX = currentPiece->getX(i);
-                        int blockY = currentPiece->getY(i);
-                        if (blockX - 1 < 0 || board.getCell(blockY, blockX - 1) != sf::Color::Transparent) {
-                            canMoveLeft = false;
-                            break;
-                        }
-                    }
-                    if (canMoveLeft)
-                        currentPiece->move(-1, 0);
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::S) {
+                    return true;
                 }
-                else if (event.key.code == sf::Keyboard::Right) {
-                    // Check if the piece can move right
-                    bool canMoveRight = true;
-                    for (int i = 0; i < 4; ++i) {
-                        int blockX = currentPiece->getX(i);
-                        int blockY = currentPiece->getY(i);
-                        if (blockX + 1 >= 10 || board.getCell(blockY, blockX + 1) != sf::Color::Transparent) {
-                            canMoveRight = false;
-                            break;
-                        }
-                    }
-                    if (canMoveRight)
-                        currentPiece->move(1, 0);
-                }
-                else if (event.key.code == sf::Keyboard::Down) {
-                    // Check if the piece can move down
-                    bool canMoveDown = true;
-                    for (int i = 0; i < 4; ++i) {
-                        int blockX = currentPiece->getX(i);
-                        int blockY = currentPiece->getY(i);
-                        if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
-                            canMoveDown = false;
-                            break;
-                        }
-                    }
-                    if (canMoveDown) {
-                        currentPiece->move(0, 1);
-                    }
-                    else {
-                        // Lock the piece into the board
-                        for (int i = 0; i < 4; ++i) {
-                            int blockX = currentPiece->getX(i);
-                            int blockY = currentPiece->getY(i);
-                            board.setCell(blockY, blockX, currentPiece->getColor());
-                        }
+                else if (event.key.code == sf::Keyboard::Escape)
+                    return false;
 
-                        // Delete the current piece and set it to nullptr
-                        delete currentPiece;
-                        currentPiece = nullptr;
-                    }
-                }
-                else if (event.key.code == sf::Keyboard::Up) {
-                    currentPiece->rotate();
-                }
             }
         }
 
-        // Auto-drop if there is a current piece
-        if (currentPiece && dropClock.getElapsedTime().asSeconds() >= dropDelay) {
-            bool atBottom = false;
-
-            // Check if the piece can move down
-            for (int i = 0; i < 4; ++i) {
-                int blockX = currentPiece->getX(i);
-                int blockY = currentPiece->getY(i);
-
-                // Check if the block is at the bottom or collides with another piece
-                if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
-                    atBottom = true;
-                    break;
-                }
-            }
-
-            if (atBottom) {
-                // Lock the piece into the board
-                for (int i = 0; i < 4; ++i) {
-                    int blockX = currentPiece->getX(i);
-                    int blockY = currentPiece->getY(i);
-                    board.setCell(blockY, blockX, currentPiece->getColor());
-                }
-
-                // Delete the current piece and set it to nullptr
-                delete currentPiece;
-                currentPiece = nullptr;
-            }
-            else {
-                // Move the piece down
-                currentPiece->move(0, 1);
-            }
-
-            dropClock.restart();
-        }
-
-        // Spawn a new piece if there is none active
-        if (!currentPiece) {
-            if (bagIndex >= 7) {
-                shuffleBag(); // Refill and shuffle the bag when it's empty
-            }
-            int index = bag[bagIndex++]; // Get the next piece from the bag
-            currentPiece = templates[index]->clone(); // Use the clone method to create a new piece
-            currentPiece->setOffset(50, 150); // Set the initial position
-            currentPiece->setActive(true); // Activate the piece
-            dropClock.restart(); // Restart the drop timer
-        }
-
-        // Drawing
         window.clear(sf::Color::Black);
-        board.draw(window);
-        if (currentPiece)
-            currentPiece->draw(window);
+        window.draw(start);
+        window.draw(exit);
         window.display();
     }
+    return false;
+}
 
-    // Cleanup
-    for (int i = 0; i < 7; ++i)
-        delete templates[i];
-    delete currentPiece;
-
-    return 0;
-}*/
-
-int main() {
-    sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
-
+void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     Piece* templates[7];
     templates[0] = new T_Piece();
     templates[1] = new I_Piece();
@@ -816,8 +679,6 @@ int main() {
     gameOverText.setStyle(sf::Text::Bold);
     gameOverText.setPosition(450, 350);
    
-
-
     // Seed the random number generator
     srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -910,7 +771,6 @@ int main() {
                     break;
                 }
             }
-
             if (atBottom) {
                 for (int i = 0; i < 4; ++i) {
                     int blockX = currentPiece->getX(i);
@@ -947,7 +807,6 @@ int main() {
                     break;
                 }
             }
-
             if (collisionAtSpawn) {
                 std::cout << "Game Over!" << std::endl;
                 delete currentPiece;
@@ -966,19 +825,29 @@ int main() {
         if (isGameOver) {
             window.draw(gameOverText);
         }
-
-            window.display();
-        
-
+        window.display();
     }
 
     for (int i = 0; i < 7; ++i)
         delete templates[i];
     delete currentPiece;
 
-    return 0;
 }
 
+int main() {
 
+    srand(static_cast<unsigned>(time(nullptr)));
 
+    sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
 
+    sf::Font font;
+    if (!font.loadFromFile("C:\\Windows\\Fonts\\lucon.ttf")) {
+        std::cerr << "Could not load font.\n";
+        return -1;
+    }
+
+    if (showStartScreen(window, font)){
+        runGameLoop(window, font);
+    }
+    return 0;
+}

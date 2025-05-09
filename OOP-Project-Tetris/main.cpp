@@ -612,6 +612,7 @@ public:
     }
 };
 
+/* 
 int main() {
     sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
 
@@ -777,6 +778,200 @@ int main() {
     }
 
     // Cleanup
+    for (int i = 0; i < 7; ++i)
+        delete templates[i];
+    delete currentPiece;
+
+    return 0;
+}*/
+
+int main() {
+    sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
+
+    Piece* templates[7];
+    templates[0] = new T_Piece();
+    templates[1] = new I_Piece();
+    templates[2] = new Sq_Piece();
+    templates[3] = new L_Piece();
+    templates[4] = new J_Piece();
+    templates[5] = new S_Piece();
+    templates[6] = new Z_Piece();
+
+    Piece* currentPiece = nullptr;
+    sf::Clock dropClock;
+    float dropDelay = 0.5f;
+
+    Board board;
+    bool isGameOver = false;
+
+    // Load font for Game Over text
+    sf::Font font;
+    if (!font.loadFromFile("C:\\WINDOWS\\Fonts\\cour.ttf")) {
+        std::cerr << "Error loading font!" << std::endl;
+        return -1;
+    }
+
+    sf::Text gameOverText("GAME OVER", font, 50);
+    gameOverText.setFillColor(sf::Color::Red);
+    gameOverText.setStyle(sf::Text::Bold);
+    gameOverText.setPosition(450, 350);
+   
+
+
+    // Seed the random number generator
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    // Bag system using an array
+    int bag[7];
+    int bagIndex = 0;
+
+    auto shuffleBag = [&]() {
+        for (int i = 0; i < 7; ++i) {
+            bag[i] = i;
+        }
+        for (int i = 6; i > 0; --i) {
+            int j = rand() % (i + 1);
+            std::swap(bag[i], bag[j]);
+        }
+        bagIndex = 0;
+        };
+
+    shuffleBag();
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (!isGameOver && currentPiece && event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Left) {
+                    bool canMoveLeft = true;
+                    for (int i = 0; i < 4; ++i) {
+                        int blockX = currentPiece->getX(i);
+                        int blockY = currentPiece->getY(i);
+                        if (blockX - 1 < 0 || board.getCell(blockY, blockX - 1) != sf::Color::Transparent) {
+                            canMoveLeft = false;
+                            break;
+                        }
+                    }
+                    if (canMoveLeft)
+                        currentPiece->move(-1, 0);
+                }
+                else if (event.key.code == sf::Keyboard::Right) {
+                    bool canMoveRight = true;
+                    for (int i = 0; i < 4; ++i) {
+                        int blockX = currentPiece->getX(i);
+                        int blockY = currentPiece->getY(i);
+                        if (blockX + 1 >= 10 || board.getCell(blockY, blockX + 1) != sf::Color::Transparent) {
+                            canMoveRight = false;
+                            break;
+                        }
+                    }
+                    if (canMoveRight)
+                        currentPiece->move(1, 0);
+                }
+                else if (event.key.code == sf::Keyboard::Down) {
+                    bool canMoveDown = true;
+                    for (int i = 0; i < 4; ++i) {
+                        int blockX = currentPiece->getX(i);
+                        int blockY = currentPiece->getY(i);
+                        if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
+                            canMoveDown = false;
+                            break;
+                        }
+                    }
+                    if (canMoveDown) {
+                        currentPiece->move(0, 1);
+                    }
+                    else {
+                        for (int i = 0; i < 4; ++i) {
+                            int blockX = currentPiece->getX(i);
+                            int blockY = currentPiece->getY(i);
+                            board.setCell(blockY, blockX, currentPiece->getColor());
+                        }
+                        delete currentPiece;
+                        currentPiece = nullptr;
+                    }
+                }
+                else if (event.key.code == sf::Keyboard::Up) {
+                    currentPiece->rotate();
+                }
+            }
+        }
+
+        if (!isGameOver && currentPiece && dropClock.getElapsedTime().asSeconds() >= dropDelay) {
+            bool atBottom = false;
+            for (int i = 0; i < 4; ++i) {
+                int blockX = currentPiece->getX(i);
+                int blockY = currentPiece->getY(i);
+                if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
+                    atBottom = true;
+                    break;
+                }
+            }
+
+            if (atBottom) {
+                for (int i = 0; i < 4; ++i) {
+                    int blockX = currentPiece->getX(i);
+                    int blockY = currentPiece->getY(i);
+                    board.setCell(blockY, blockX, currentPiece->getColor());
+                }
+                delete currentPiece;
+                currentPiece = nullptr;
+            }
+            else {
+                currentPiece->move(0, 1);
+            }
+
+            dropClock.restart();
+        }
+
+        // Game over check during spawn
+        if (!isGameOver && !currentPiece) {
+            if (bagIndex >= 7)
+                shuffleBag();
+
+            int index = bag[bagIndex++];
+            currentPiece = templates[index]->clone();
+            currentPiece->setOffset(50, 150);
+            currentPiece->setActive(true);
+
+            // Check if any block of the new piece overlaps the board
+            bool collisionAtSpawn = false;
+            for (int i = 0; i < 4; ++i) {
+                int blockX = currentPiece->getX(i);
+                int blockY = currentPiece->getY(i);
+                if (board.getCell(blockY, blockX) != sf::Color::Transparent) {
+                    collisionAtSpawn = true;
+                    break;
+                }
+            }
+
+            if (collisionAtSpawn) {
+                std::cout << "Game Over!" << std::endl;
+                delete currentPiece;
+                currentPiece = nullptr;
+                isGameOver = true;
+            }
+
+            dropClock.restart();
+        }
+
+        window.clear(sf::Color::Black);
+        board.draw(window);
+        if (currentPiece && !isGameOver)
+            currentPiece->draw(window);
+
+        if (isGameOver) {
+            window.draw(gameOverText);
+        }
+
+            window.display();
+        
+
+    }
+
     for (int i = 0; i < 7; ++i)
         delete templates[i];
     delete currentPiece;

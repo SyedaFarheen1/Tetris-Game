@@ -40,6 +40,8 @@ public:
     virtual void draw(sf::RenderWindow& window) = 0;
     virtual void move(int dx, int dy) = 0;
     virtual void rotate() = 0;
+    virtual Piece* clone() const = 0;  // Pure virtual clone
+    virtual sf::Color getColor() const { return color; }
     virtual ~Piece() {}
 };
 
@@ -117,6 +119,9 @@ public:
         }
 
     }
+    Piece* clone() const override {
+        return new T_Piece(*this); // Return a new instance of T_Piece
+    }
 };
 
 // Derived class: I_Piece
@@ -182,6 +187,9 @@ public:
             blockX[3] = Ix; blockY[3] = Iy + 2;
         }
     }
+    Piece* clone() const override {
+        return new I_Piece(*this); // Return a new instance of I_Piece
+    }
 };
 
 //Square-piece
@@ -227,6 +235,10 @@ public:
     void rotate() override {
         if (!is_active) return; // Only rotate if active
         cout << "square piece does not rotate" << endl;
+    }
+
+    Piece* clone() const override {
+        return new Sq_Piece(*this); // Return a new instance of Sq_Piece
     }
 };
 
@@ -302,6 +314,9 @@ public:
             blockX[3] = lx - 1;  blockY[3] = ly + 1;
         }
     }
+    Piece* clone() const override {
+        return new L_Piece(*this); // Return a new instance of L_Piece
+    }
 };
 
 //J-piece
@@ -374,6 +389,9 @@ public:
             blockX[2] = jx + 1;  blockY[2] = jy;
             blockX[3] = jx + 1;  blockY[3] = jy + 1;
         }
+    }
+    Piece* clone() const override {
+        return new J_Piece(*this); // Return a new instance of J_Piece
     }
 };
 
@@ -448,6 +466,9 @@ public:
             blockX[3] = cx + 1;  blockY[3] = cy + 1;
         }
     }
+    Piece* clone() const override {
+        return new S_Piece(*this); // Return a new instance of S_Piece
+    }
 };
 
 //Z-piece
@@ -521,6 +542,9 @@ public:
             blockX[3] = zx + 1;  blockY[3] = zy - 1;
         }
     }
+    Piece* clone() const override {
+        return new Z_Piece(*this); // Return a new instance of Z_Piece
+    }
 };
 
 
@@ -530,25 +554,23 @@ private:
     static const int cols = 10;
     static const int cellSize = 30;
 
-    int board[rows][cols];               // Main game grid
-    int offsetX;                         // X offset for board position
-    int offsetY;                         // Y offset
-    sf::RectangleShape cell;            // Used to draw each cell
+    sf::Color board[rows][cols];       // Each cell stores a color
+    int offsetX;                       // X offset for board position
+    int offsetY;                       // Y offset
+    sf::RectangleShape cell;          // Used to draw each cell
 
 public:
-    // Constructor with optional offsets
     Board(int x = 50, int y = 150) : offsetX(x), offsetY(y) {
-        // Initialize board with empty cells
+        // Initialize all cells to transparent
         for (int i = 0; i < rows; ++i)
             for (int j = 0; j < cols; ++j)
-                board[i][j] = 0;
+                board[i][j] = sf::Color::Transparent;
 
         cell.setSize(sf::Vector2f(cellSize, cellSize));
         cell.setOutlineThickness(1);
         cell.setOutlineColor(sf::Color(80, 80, 80));
     }
 
-    // Draw the board: boundaries + empty cells
     void draw(sf::RenderWindow& window) {
         // Draw boundaries (gray border)
         for (int row = 0; row < rows + 2; row++) {
@@ -561,18 +583,29 @@ public:
             }
         }
 
-        // Draw grid cells
+        // Draw filled grid cells
         for (int row = 0; row < rows; ++row) {
             for (int col = 0; col < cols; ++col) {
                 cell.setPosition(offsetX + (col + 1) * cellSize, offsetY + (row + 1) * cellSize);
-                if (board[row][col] == 0)
-                    cell.setFillColor(sf::Color::Black); // Empty cell
+                if (board[row][col] != sf::Color::Transparent)
+                    cell.setFillColor(board[row][col]);
                 else
-                    cell.setFillColor(sf::Color::White); // Filled cell (temporary for now)
+                    cell.setFillColor(sf::Color::Black); // Empty cell
 
                 window.draw(cell);
             }
         }
+    }
+
+    sf::Color getCell(int row, int col) const {
+        if (row >= 0 && row < rows && col >= 0 && col < cols)
+            return board[row][col];
+        return sf::Color::Black; // Invalid 
+    }
+
+    void setCell(int row, int col, sf::Color color) {
+        if (row >= 0 && row < rows && col >= 0 && col < cols)
+            board[row][col] = color;
     }
 };
 
@@ -612,16 +645,42 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
 
 void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
 
-    const int numPieces = 7;
-    Piece* pieces[numPieces] = {
-        new T_Piece(), new I_Piece(), new Sq_Piece(), new L_Piece(),
-        new J_Piece(), new S_Piece(), new Z_Piece()
-    };
+    Piece* templates[7];
+    templates[0] = new T_Piece();
+    templates[1] = new I_Piece();
+    templates[2] = new Sq_Piece();
+    templates[3] = new L_Piece();
+    templates[4] = new J_Piece();
+    templates[5] = new S_Piece();
+    templates[6] = new Z_Piece();
 
     Piece* currentPiece = nullptr;
     sf::Clock dropClock;
     float dropDelay = 0.5f;
+
     Board board;
+
+    // Seed the random number generator
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    // Bag system using an array
+    int bag[7];
+    int bagIndex = 0;
+
+    // Function to shuffle the bag
+    auto shuffleBag = [&]() {
+        for (int i = 0; i < 7; ++i) {
+            bag[i] = i;
+        }
+        for (int i = 6; i > 0; --i) {
+            int j = rand() % (i + 1);
+            std::swap(bag[i], bag[j]);
+        }
+        bagIndex = 0; // Reset the index
+        };
+
+    // Initialize the bag
+    shuffleBag();
 
     while (window.isOpen()) {
         sf::Event event;
@@ -629,62 +688,132 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // Handle movement only for current active piece
             if (currentPiece && event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left)
-                    currentPiece->move(-1, 0);
-                else if (event.key.code == sf::Keyboard::Right)
+                if (event.key.code == sf::Keyboard::Left) {
+                    // Check if the piece can move left
+                    bool canMoveLeft = true;
+                    for (int i = 0; i < 4; ++i) {
+                        int blockX = currentPiece->getX(i);
+                        int blockY = currentPiece->getY(i);
+                        if (blockX - 1 < 0 || board.getCell(blockY, blockX - 1) != sf::Color::Transparent) {
+                            canMoveLeft = false;
+                            break;
+                        }
+                    }
+                    if (canMoveLeft)
+                        currentPiece->move(-1, 0);
+                }
+
+            }
+            else if (event.key.code == sf::Keyboard::Right) {
+                // Check if the piece can move right
+                bool canMoveRight = true;
+                for (int i = 0; i < 4; ++i) {
+                    int blockX = currentPiece->getX(i);
+                    int blockY = currentPiece->getY(i);
+                    if (blockX + 1 >= 10 || board.getCell(blockY, blockX + 1) != sf::Color::Transparent) {
+                        canMoveRight = false;
+                        break;
+                    }
+                }
+                if (canMoveRight)
                     currentPiece->move(1, 0);
-                else if (event.key.code == sf::Keyboard::Down)
+            }
+            else if (event.key.code == sf::Keyboard::Down) {
+                // Check if the piece can move down
+                bool canMoveDown = true;
+                for (int i = 0; i < 4; ++i) {
+                    int blockX = currentPiece->getX(i);
+                    int blockY = currentPiece->getY(i);
+                    if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
+                        canMoveDown = false;
+                        break;
+                    }
+                }
+                if (canMoveDown) {
                     currentPiece->move(0, 1);
-                else if (event.key.code == sf::Keyboard::Up)
-                    currentPiece->rotate();
+                }
+                else {
+                    // Lock the piece into the board
+                    for (int i = 0; i < 4; ++i) {
+                        int blockX = currentPiece->getX(i);
+                        int blockY = currentPiece->getY(i);
+                        board.setCell(blockY, blockX, currentPiece->getColor());
+                    }
+
+                    // Delete the current piece and set it to nullptr
+                    delete currentPiece;
+                    currentPiece = nullptr;
+                }
+            }
+            else if (event.key.code == sf::Keyboard::Up) {
+                currentPiece->rotate();
             }
         }
 
-        // Spawn new piece if none is active
-        if (!currentPiece) {
-            int idx = rand() % numPieces;
-            currentPiece = pieces[idx];
-            currentPiece->setOffset(50, 150);
-            currentPiece->setActive(true);
-            dropClock.restart();
-        }
-
-        // Auto-drop the active piece
+        // Auto-drop if there is a current piece
         if (currentPiece && dropClock.getElapsedTime().asSeconds() >= dropDelay) {
-            currentPiece->move(0, 1); // Move down
-            dropClock.restart();
-
-            // Simple bottom check — stop at bottom row (adjust based on your grid size)
             bool atBottom = false;
+
+            // Check if the piece can move down
             for (int i = 0; i < 4; ++i) {
-                int yBlock = currentPiece->getY(i) + currentPiece->getOffsetY() / 30;
-                if (yBlock >= 19) {  // 20 rows = index 0 to 19
+                int blockX = currentPiece->getX(i);
+                int blockY = currentPiece->getY(i);
+
+                // Check if the block is at the bottom or collides with another piece
+                if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
                     atBottom = true;
                     break;
                 }
             }
 
             if (atBottom) {
-                currentPiece->setActive(false);
+                // Lock the piece into the board
+                for (int i = 0; i < 4; ++i) {
+                    int blockX = currentPiece->getX(i);
+                    int blockY = currentPiece->getY(i);
+                    board.setCell(blockY, blockX, currentPiece->getColor());
+                }
+
+                // Delete the current piece and set it to nullptr
+                delete currentPiece;
                 currentPiece = nullptr;
             }
+            else {
+                // Move the piece down
+                currentPiece->move(0, 1);
+            }
+
+            dropClock.restart();
         }
 
-        // Draw everything
+        // Spawn a new piece if there is none active
+        if (!currentPiece) {
+            if (bagIndex >= 7) {
+                shuffleBag(); // Refill and shuffle the bag when it's empty
+            }
+            int index = bag[bagIndex++]; // Get the next piece from the bag
+            currentPiece = templates[index]->clone(); // Use the clone method to create a new piece
+            currentPiece->setOffset(50, 150); // Set the initial position
+            currentPiece->setActive(true); // Activate the piece
+            dropClock.restart(); // Restart the drop timer
+        }
+
+        // Drawing
         window.clear(sf::Color::Black);
         board.draw(window);
-        for (int i = 0; i < numPieces; ++i) {
-            pieces[i]->draw(window);
-            window.display();
-        }
+        if (currentPiece)
+            currentPiece->draw(window);
+        window.display();
+
 
     }
 
     // Cleanup
-    for (int i = 0; i < numPieces; ++i)
-        delete pieces[i];
+    for (int i = 0; i < 7; ++i)
+        delete templates[i];
+    delete currentPiece;
+
 
 }
 

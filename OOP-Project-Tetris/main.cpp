@@ -671,7 +671,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     sf::Font font;
     if (!font.loadFromFile("C:\\WINDOWS\\Fonts\\cour.ttf")) {
         std::cerr << "Error loading font!" << std::endl;
-        return -1;
+        return;
     }
 
     sf::Text gameOverText("GAME OVER", font, 50);

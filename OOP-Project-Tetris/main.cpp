@@ -659,6 +659,19 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     float dropDelay = 0.5f;
 
     Board board;
+    bool isGameOver = false;
+
+    // Load font for Game Over text
+    //sf::Font font;
+    if (!font.loadFromFile("C:\\WINDOWS\\Fonts\\cour.ttf")) {
+        std::cerr << "Error loading font!" << std::endl;
+        return;
+    }
+
+    sf::Text gameOverText("GAME OVER", font, 50);
+    gameOverText.setFillColor(sf::Color::Red);
+    gameOverText.setStyle(sf::Text::Bold);
+    gameOverText.setPosition(450, 350);
 
     // Seed the random number generator
     srand(static_cast<unsigned int>(time(nullptr)));
@@ -688,9 +701,8 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            if (currentPiece && event.type == sf::Event::KeyPressed) {
+            if (!isGameOver && currentPiece && event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Left) {
-                    // Check if the piece can move left
                     bool canMoveLeft = true;
                     for (int i = 0; i < 4; ++i) {
                         int blockX = currentPiece->getX(i);
@@ -704,63 +716,55 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                         currentPiece->move(-1, 0);
                 }
 
-            }
-            else if (event.key.code == sf::Keyboard::Right) {
-                // Check if the piece can move right
-                bool canMoveRight = true;
-                for (int i = 0; i < 4; ++i) {
-                    int blockX = currentPiece->getX(i);
-                    int blockY = currentPiece->getY(i);
-                    if (blockX + 1 >= 10 || board.getCell(blockY, blockX + 1) != sf::Color::Transparent) {
-                        canMoveRight = false;
-                        break;
-                    }
-                }
-                if (canMoveRight)
-                    currentPiece->move(1, 0);
-            }
-            else if (event.key.code == sf::Keyboard::Down) {
-                // Check if the piece can move down
-                bool canMoveDown = true;
-                for (int i = 0; i < 4; ++i) {
-                    int blockX = currentPiece->getX(i);
-                    int blockY = currentPiece->getY(i);
-                    if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
-                        canMoveDown = false;
-                        break;
-                    }
-                }
-                if (canMoveDown) {
-                    currentPiece->move(0, 1);
-                }
-                else {
-                    // Lock the piece into the board
+
+                else if (event.key.code == sf::Keyboard::Right) {
+                    bool canMoveRight = true;
                     for (int i = 0; i < 4; ++i) {
                         int blockX = currentPiece->getX(i);
                         int blockY = currentPiece->getY(i);
-                        board.setCell(blockY, blockX, currentPiece->getColor());
+                        if (blockX + 1 >= 10 || board.getCell(blockY, blockX + 1) != sf::Color::Transparent) {
+                            canMoveRight = false;
+                            break;
+                        }
                     }
-
-                    // Delete the current piece and set it to nullptr
-                    delete currentPiece;
-                    currentPiece = nullptr;
+                    if (canMoveRight)
+                        currentPiece->move(1, 0);
                 }
-            }
-            else if (event.key.code == sf::Keyboard::Up) {
-                currentPiece->rotate();
+
+                else if (event.key.code == sf::Keyboard::Down) {
+                    bool canMoveDown = true;
+                    for (int i = 0; i < 4; ++i) {
+                        int blockX = currentPiece->getX(i);
+                        int blockY = currentPiece->getY(i);
+                        if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
+                            canMoveDown = false;
+                            break;
+                        }
+                    }
+                    if (canMoveDown) {
+                        currentPiece->move(0, 1);
+                    }
+                    else {
+                        for (int i = 0; i < 4; ++i) {
+                            int blockX = currentPiece->getX(i);
+                            int blockY = currentPiece->getY(i);
+                            board.setCell(blockY, blockX, currentPiece->getColor());
+                        }
+                        delete currentPiece;
+                        currentPiece = nullptr;
+                    }
+                }
+                else if (event.key.code == sf::Keyboard::Up) {
+                    currentPiece->rotate();
+                }
             }
         }
 
-        // Auto-drop if there is a current piece
-        if (currentPiece && dropClock.getElapsedTime().asSeconds() >= dropDelay) {
+        if (!isGameOver && currentPiece && dropClock.getElapsedTime().asSeconds() >= dropDelay) {
             bool atBottom = false;
-
-            // Check if the piece can move down
             for (int i = 0; i < 4; ++i) {
                 int blockX = currentPiece->getX(i);
                 int blockY = currentPiece->getY(i);
-
-                // Check if the block is at the bottom or collides with another piece
                 if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
                     atBottom = true;
                     break;
@@ -768,52 +772,69 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             }
 
             if (atBottom) {
-                // Lock the piece into the board
                 for (int i = 0; i < 4; ++i) {
                     int blockX = currentPiece->getX(i);
                     int blockY = currentPiece->getY(i);
                     board.setCell(blockY, blockX, currentPiece->getColor());
                 }
-
-                // Delete the current piece and set it to nullptr
                 delete currentPiece;
                 currentPiece = nullptr;
             }
             else {
-                // Move the piece down
                 currentPiece->move(0, 1);
             }
 
             dropClock.restart();
         }
 
-        // Spawn a new piece if there is none active
-        if (!currentPiece) {
-            if (bagIndex >= 7) {
-                shuffleBag(); // Refill and shuffle the bag when it's empty
+        // Game over check during spawn
+        if (!isGameOver && !currentPiece) {
+            if (bagIndex >= 7)
+                shuffleBag();
+
+            int index = bag[bagIndex++];
+            currentPiece = templates[index]->clone();
+            currentPiece->setOffset(50, 150);
+            currentPiece->setActive(true);
+
+            // Check if any block of the new piece overlaps the board
+            bool collisionAtSpawn = false;
+            for (int i = 0; i < 4; ++i) {
+                int blockX = currentPiece->getX(i);
+                int blockY = currentPiece->getY(i);
+                if (board.getCell(blockY, blockX) != sf::Color::Transparent) {
+                    collisionAtSpawn = true;
+                    break;
+                }
             }
-            int index = bag[bagIndex++]; // Get the next piece from the bag
-            currentPiece = templates[index]->clone(); // Use the clone method to create a new piece
-            currentPiece->setOffset(50, 150); // Set the initial position
-            currentPiece->setActive(true); // Activate the piece
-            dropClock.restart(); // Restart the drop timer
+
+            if (collisionAtSpawn) {
+                std::cout << "Game Over!" << std::endl;
+                delete currentPiece;
+                currentPiece = nullptr;
+                isGameOver = true;
+            }
+
+            dropClock.restart();
         }
 
-        // Drawing
         window.clear(sf::Color::Black);
         board.draw(window);
-        if (currentPiece)
+        if (currentPiece && !isGameOver)
             currentPiece->draw(window);
+
+        if (isGameOver) {
+            window.draw(gameOverText);
+        }
+
         window.display();
 
 
     }
 
-    // Cleanup
     for (int i = 0; i < 7; ++i)
         delete templates[i];
     delete currentPiece;
-
 
 }
 

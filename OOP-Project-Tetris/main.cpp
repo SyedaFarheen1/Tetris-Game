@@ -1,9 +1,8 @@
 #include <SFML/Graphics.hpp>
+#include <cstdlib> // For rand() and srand()
+#include <ctime>   // For time()
 #include <iostream>
-
 using namespace std;
-
-
 
 // Base class: Piece
 class Piece {
@@ -119,9 +118,10 @@ public:
         }
 
     }
-    Piece* clone() const override {
-        return new T_Piece(*this); // Return a new instance of T_Piece
-    }
+	Piece* clone() const override {
+		return new T_Piece(*this); // Return a new instance of T_Piece
+	}
+
 };
 
 // Derived class: I_Piece
@@ -196,7 +196,7 @@ public:
 class Sq_Piece : public Piece {
 private:
     sf::RectangleShape blocks[4];
-    int rotationState; // O piece doesn’t rotate, but keeping for consistency
+    int rotationState; // Square piece doesnâ€™t rotate, but keeping for consistency
 
 public:
     Sq_Piece() {
@@ -209,7 +209,7 @@ public:
         blockX[3] = 5; blockY[3] = 1;
 
         for (int i = 0; i < 4; i++) {
-            blocks[i].setSize(sf::Vector2f(30, 30));
+            blocks[i].setSize(sf::Vector2f(30, 30)); // Each block is 30x30 pixels
             blocks[i].setFillColor(color);
         }
 
@@ -219,6 +219,7 @@ public:
     void draw(sf::RenderWindow& window) override {
         if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
+            // Correctly align the blocks with the grid
             blocks[i].setPosition(offsetX + blockX[i] * 30, offsetY + blockY[i] * 30);
             window.draw(blocks[i]);
         }
@@ -234,13 +235,19 @@ public:
 
     void rotate() override {
         if (!is_active) return; // Only rotate if active
-        cout << "square piece does not rotate" << endl;
+        // Square piece does not rotate
+        cout << "Square piece does not rotate" << endl;
+    }
+
+    Piece* clone() const override {
+        return new Sq_Piece(*this); // Return a new instance of Sq_Piece
     }
 
     Piece* clone() const override {
         return new Sq_Piece(*this); // Return a new instance of Sq_Piece
     }
 };
+
 
 // L_Piece
 class L_Piece : public Piece {
@@ -466,9 +473,10 @@ public:
             blockX[3] = cx + 1;  blockY[3] = cy + 1;
         }
     }
-    Piece* clone() const override {
-        return new S_Piece(*this); // Return a new instance of S_Piece
-    }
+
+	Piece* clone() const override {
+		return new S_Piece(*this); // Return a new instance of S_Piece
+  }
 };
 
 //Z-piece
@@ -596,7 +604,6 @@ public:
             }
         }
     }
-
     sf::Color getCell(int row, int col) const {
         if (row >= 0 && row < rows && col >= 0 && col < cols)
             return board[row][col];
@@ -644,7 +651,6 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
 }
 
 void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
-
     Piece* templates[7];
     templates[0] = new T_Piece();
     templates[1] = new I_Piece();
@@ -662,17 +668,17 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     bool isGameOver = false;
 
     // Load font for Game Over text
-    //sf::Font font;
+    sf::Font font;
     if (!font.loadFromFile("C:\\WINDOWS\\Fonts\\cour.ttf")) {
         std::cerr << "Error loading font!" << std::endl;
-        return;
+        return -1;
     }
 
     sf::Text gameOverText("GAME OVER", font, 50);
     gameOverText.setFillColor(sf::Color::Red);
     gameOverText.setStyle(sf::Text::Bold);
     gameOverText.setPosition(450, 350);
-
+   
     // Seed the random number generator
     srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -680,7 +686,6 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     int bag[7];
     int bagIndex = 0;
 
-    // Function to shuffle the bag
     auto shuffleBag = [&]() {
         for (int i = 0; i < 7; ++i) {
             bag[i] = i;
@@ -689,10 +694,9 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             int j = rand() % (i + 1);
             std::swap(bag[i], bag[j]);
         }
-        bagIndex = 0; // Reset the index
+        bagIndex = 0;
         };
 
-    // Initialize the bag
     shuffleBag();
 
     while (window.isOpen()) {
@@ -715,8 +719,6 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                     if (canMoveLeft)
                         currentPiece->move(-1, 0);
                 }
-
-
                 else if (event.key.code == sf::Keyboard::Right) {
                     bool canMoveRight = true;
                     for (int i = 0; i < 4; ++i) {
@@ -730,7 +732,6 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                     if (canMoveRight)
                         currentPiece->move(1, 0);
                 }
-
                 else if (event.key.code == sf::Keyboard::Down) {
                     bool canMoveDown = true;
                     for (int i = 0; i < 4; ++i) {
@@ -770,7 +771,6 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                     break;
                 }
             }
-
             if (atBottom) {
                 for (int i = 0; i < 4; ++i) {
                     int blockX = currentPiece->getX(i);
@@ -807,7 +807,6 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                     break;
                 }
             }
-
             if (collisionAtSpawn) {
                 std::cout << "Game Over!" << std::endl;
                 delete currentPiece;
@@ -826,10 +825,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
         if (isGameOver) {
             window.draw(gameOverText);
         }
-
         window.display();
-
-
     }
 
     for (int i = 0; i < 7; ++i)
@@ -853,9 +849,5 @@ int main() {
     if (showStartScreen(window, font)){
         runGameLoop(window, font);
     }
-
-    
-
     return 0;
 }
-

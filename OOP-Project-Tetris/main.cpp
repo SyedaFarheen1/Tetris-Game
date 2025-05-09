@@ -610,6 +610,34 @@ public:
         if (row >= 0 && row < rows && col >= 0 && col < cols)
             board[row][col] = color;
     }
+    void checkAndClearLines() {
+        for (int row = 0; row < rows; ++row) {
+            bool isFull = true;
+
+            for (int col = 0; col < cols; ++col) {
+                if (board[row][col] == sf::Color::Transparent) {
+                    isFull = false;
+                    break;
+                }
+            }
+
+            if (isFull) {
+                // Same logic from your clearFullLines
+                for (int r = row; r > 0; --r) {
+                    for (int col = 0; col < cols; ++col) {
+                        board[r][col] = board[r - 1][col];
+                    }
+                }
+
+                for (int col = 0; col < cols; ++col) {
+                    board[0][col] = sf::Color::Transparent;
+                }
+
+                // Since one row was removed, check this row again
+                ++row;
+            }
+        }
+    }
 };
 
 
@@ -781,6 +809,10 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
 
             dropClock.restart();
         }
+		// Check for full lines and clear them
+		if (currentPiece) {
+			board.checkAndClearLines();
+		}
 
         // Game over check during spawn
         if (!isGameOver && !currentPiece) {

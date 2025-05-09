@@ -3,22 +3,19 @@ C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(72,75
 C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(72,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(154,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(154,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(246,12): error C2535: 'Piece *Sq_Piece::clone(void) const': member function already defined or declared
-      C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(242,12):
-      see declaration of 'Sq_Piece::clone'
-  
 C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(223,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(223,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(279,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(279,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(355,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(355,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(431,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(431,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(508,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(508,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(587,72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(587,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(597,74): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(597,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(671,14): error C2082: redefinition of formal parameter 'font'
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(275,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(275,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(351,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(351,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(427,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(427,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(504,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(504,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(583,72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(583,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(593,74): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(593,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  LINK : C:\Users\syeda\source\repos\OOP-Project-Tetris\x64\Debug\OOP-Project-Tetris.exe not found or not built by the last incremental link; performing full link
+  OOP-Project-Tetris.vcxproj -> C:\Users\syeda\source\repos\OOP-Project-Tetris\x64\Debug\OOP-Project-Tetris.exe

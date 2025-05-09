@@ -13,8 +13,8 @@ C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(427,7
 C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(427,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(504,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(504,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(583,72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(583,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(593,74): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(593,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(590,72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(590,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(600,74): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(600,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   OOP-Project-Tetris.vcxproj -> C:\Users\syeda\source\repos\OOP-Project-Tetris\x64\Debug\OOP-Project-Tetris.exe

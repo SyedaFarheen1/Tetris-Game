@@ -695,7 +695,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(900, 800), "Tetris Game");
 
     sf::Font font;
-    if (!font.loadFromFile("asset/Roboto_SemiCondensed-Light.ttf")) {
+    if (!font.loadFromFile("C:\\Windows\\Fonts\\lucon.ttf")) {
         std::cerr << "Could not load font.\n";
         return -1;
     }

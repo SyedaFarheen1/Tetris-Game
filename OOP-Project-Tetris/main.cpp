@@ -449,7 +449,7 @@ public:
         if (!is_active) return; // Only draw if active
         for (int i = 0; i < 4; i++) {
             // Correctly align the blocks with the grid
-            blocks[i].setPosition(offsetX + blockX[i] * 30, offsetY + blockY[i] * 30);
+            blocks[i].setPosition(offsetX + (blockX[i] + 1) * 30, offsetY + (blockY[i] + 1) * 30);
             window.draw(blocks[i]);
         }
     }

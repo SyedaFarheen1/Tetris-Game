@@ -4,6 +4,141 @@
 #include <iostream>
 using namespace std;
 
+class Board {
+private:
+    static const int rows = 20;
+    static const int cols = 10;
+    static const int cellSize = 30;
+
+    sf::Color board[rows][cols];       // Each cell stores a color
+    int offsetX;                       // X offset for board position
+    int offsetY;                       // Y offset
+    sf::RectangleShape cell;          // Used to draw each cell
+
+    int score;
+    int linesCleared;
+    int level;
+
+public:
+    Board(int x = 50, int y = 150) : offsetX(x), offsetY(y) {
+        // Initialize all cells to transparent
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j)
+                board[i][j] = sf::Color::Transparent;
+        }
+        score = 0;
+        level = 1;
+        linesCleared = 0;
+        cell.setSize(sf::Vector2f(cellSize, cellSize));
+        cell.setOutlineThickness(1);
+        cell.setOutlineColor(sf::Color(80, 80, 80));
+    }
+
+    void draw(sf::RenderWindow& window) {
+        // Draw boundaries (gray border)
+        for (int row = 0; row < rows + 2; row++) {
+            for (int col = 0; col < cols + 2; col++) {
+                if (row == 0 || row == rows + 1 || col == 0 || col == cols + 1) {
+                    cell.setPosition(offsetX + col * cellSize, offsetY + row * cellSize);
+                    cell.setFillColor(sf::Color(128, 128, 128)); // Gray
+                    window.draw(cell);
+                }
+            }
+        }
+
+        // Draw filled grid cells
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                cell.setPosition(offsetX + (col + 1) * cellSize, offsetY + (row + 1) * cellSize);
+                if (board[row][col] != sf::Color::Transparent)
+                    cell.setFillColor(board[row][col]);
+                else
+                    cell.setFillColor(sf::Color::Black); // Empty cell
+
+                window.draw(cell);
+            }
+        }
+    }
+    sf::Color getCell(int row, int col) const {
+        if (row >= 0 && row < rows && col >= 0 && col < cols)
+            return board[row][col];
+        return sf::Color::Black; // Invalid 
+    }
+
+    void setCell(int row, int col, sf::Color color) {
+        if (row >= 0 && row < rows && col >= 0 && col < cols)
+            board[row][col] = color;
+    }
+    void setScore(int condition) {
+        if (condition == 1) {
+            score += 40 * (level + 1);
+        }
+        else if (condition == 2) {
+            score += 100 * (level + 1);
+        }
+        else if (condition == 3) {
+            score += 300 * (level + 1);
+        }
+        else if (condition == 4) {
+            score += 1200 * (level + 1);
+        }
+        else {
+            score += 0;
+        }
+    }
+    void setLinesCleared(int lines) {
+        linesCleared += lines;
+    }
+    int getLinesCleared() const {
+        return linesCleared;
+    }
+    int getScore() const {
+        return score;
+    }
+    int getLevel() const {
+        return level;
+    }
+    void setLevel(int newLevel) {
+        level = newLevel;
+    }
+    int checkAndClearLines() {
+        int linesClearedThisMove = 0; // Track lines cleared in this move
+
+        for (int row = 0; row < rows; ++row) {
+            bool isFull = true;
+
+            for (int col = 0; col < cols; ++col) {
+                if (board[row][col] == sf::Color::Transparent) {
+                    isFull = false;
+                    break;
+                }
+            }
+
+            if (isFull) {
+                ++linesClearedThisMove; // Increment for this move
+                ++linesCleared;         // Increment total lines cleared
+
+                // Clear the full line and shift rows above down
+                for (int r = row; r > 0; --r) {
+                    for (int col = 0; col < cols; ++col) {
+                        board[r][col] = board[r - 1][col];
+                    }
+                }
+
+                // Clear the top row
+                for (int col = 0; col < cols; ++col) {
+                    board[0][col] = sf::Color::Transparent;
+                }
+
+                // Check the same row again since it now contains the row above
+                --row;
+            }
+        }
+
+        return linesClearedThisMove; // Return lines cleared in this move
+    }
+};
+
 // Base class: Piece
 class Piece {
 protected:
@@ -53,10 +188,43 @@ public:
         }
         return true;
     }
+    bool tryWallKick(Board& board) {
+        // Define possible shifts for wall kicks
+        const int shifts[4][2] = {
+            {1, 0},  // Right
+            {-1, 0}, // Left
+            {0, -1}, // Down,
+			{0, 1}   // Up
+        };
 
+        // Try each of the 4 possible shifts
+        for (int s = 0; s < 4; ++s) {
+            int shiftX = shifts[s][0];
+            int shiftY = shifts[s][1];
+
+            // Apply the shift to each block
+            for (int i = 0; i < 4; ++i) {
+                blockX[i] += shiftX;
+                blockY[i] += shiftY;
+            }
+
+            // Check if the new position is valid
+            if (isValidPosition(board)) {
+                return true; // Wall kick succeeded
+            }
+
+            // Undo the shift
+            for (int i = 0; i < 4; ++i) {
+                blockX[i] -= shiftX;
+                blockY[i] -= shiftY;
+            }
+        }
+
+        return false; // No valid wall kick found
+    }
     virtual void draw(sf::RenderWindow& window) = 0;
     virtual void move(int dx, int dy) = 0;
-    virtual void rotate() = 0;
+    virtual void rotate(Board& board) = 0; // Pure virtual method with Board& parameter
     virtual Piece* clone() const = 0;  // Pure virtual clone
     virtual sf::Color getColor() const { return color; }
     virtual ~Piece() {}
@@ -100,8 +268,17 @@ public:
         }
     }
 
-    void rotate() override {
+    void rotate(Board& board) override {
 		if (!is_active) return; // Only rotate if active
+        
+        // Save the current positions of the piece
+        int originalBlockX[4];
+        int originalBlockY[4];
+        for (int i = 0; i < 4; ++i) {
+            originalBlockX[i] = blockX[i];
+            originalBlockY[i] = blockY[i];
+        }
+        int originalRotationState = rotationState;
         rotationState = (rotationState + 1) % 4;
 
         int x = blockX[1];
@@ -135,6 +312,18 @@ public:
             blockX[3] = x + 1; blockY[3] = y;
         }
 
+		// Check if the new position is valid
+        if (!isValidPosition(board)) {
+            // If not, try Wall Kick
+            if (!tryWallKick(board)) {
+                // If Wall Kick fails, revert to original position
+                for (int i = 0; i < 4; ++i) {
+                    blockX[i] = originalBlockX[i];
+                    blockY[i] = originalBlockY[i];
+                }
+                rotationState = originalRotationState; // Revert rotation state
+            }
+        }
     }
 	Piece* clone() const override {
 		return new T_Piece(*this); // Return a new instance of T_Piece
@@ -182,17 +371,23 @@ public:
         }
     }
 
-    void rotate() override {
+    void rotate(Board& board) override {
         if (!is_active) return; // Only rotate if active
 
+        // Save the current positions of the piece
+        int originalBlockX[4];
+        int originalBlockY[4];
+        for (int i = 0; i < 4; ++i) {
+            originalBlockX[i] = blockX[i];
+            originalBlockY[i] = blockY[i];
+        }
+        int originalRotationState = rotationState;
         rotationState = (rotationState + 1) % 2;
 
         int Ix = blockX[1];
         int Iy = blockY[1];
 
         if (rotationState == 0) {
-            
-
             blockX[0] = Ix - 1; blockY[0] = Iy;
             blockX[1] = Ix;     blockY[1] = Iy;
             blockX[2] = Ix + 1; blockY[2] = Iy;
@@ -204,6 +399,19 @@ public:
             blockX[2] = Ix; blockY[2] = Iy + 1;
             blockX[3] = Ix; blockY[3] = Iy + 2;
         }
+
+		// Check if the new position is valid
+		if (!isValidPosition(board)) {
+			// If not, try Wall Kick
+			if (!tryWallKick(board)) {
+				// If Wall Kick fails, revert to original position
+				for (int i = 0; i < 4; ++i) {
+					blockX[i] = originalBlockX[i];
+					blockY[i] = originalBlockY[i];
+				}
+				rotationState = originalRotationState; // Revert rotation state
+			}
+		}
     }
     Piece* clone() const override {
         return new I_Piece(*this); // Return a new instance of I_Piece
@@ -251,7 +459,7 @@ public:
         }
     }
 
-    void rotate() override {
+    void rotate(Board& board) override {
         if (!is_active) return; // Only rotate if active
         // Square piece does not rotate
         cout << "Square piece does not rotate" << endl;
@@ -303,12 +511,21 @@ public:
         }
     }
 
-    void rotate() override {
+    void rotate(Board& board) override {
         if (!is_active) return; // Only rotate if active
+
+        // Save the current positions of the piece
+        int originalBlockX[4];
+        int originalBlockY[4];
+        for (int i = 0; i < 4; ++i) {
+            originalBlockX[i] = blockX[i];
+            originalBlockY[i] = blockY[i];
+        }
+        int originalRotationState = rotationState;
+        rotationState = (rotationState + 1) % 4;
+
         int lx = blockX[1];
         int ly = blockY[1];
-
-        rotationState = (rotationState + 1) % 4;
 
         if (rotationState == 0) {
             blockX[0] = lx;  blockY[0] = ly - 1;
@@ -333,6 +550,19 @@ public:
             blockX[1] = lx;  blockY[1] = ly;
             blockX[2] = lx - 1;  blockY[2] = ly;
             blockX[3] = lx - 1;  blockY[3] = ly + 1;
+        }
+
+		// Check if the new position is valid
+        if (!isValidPosition(board)) {
+            // If not, try Wall Kick
+            if (!tryWallKick(board)) {
+                // If Wall Kick fails, revert to original position
+                for (int i = 0; i < 4; ++i) {
+                    blockX[i] = originalBlockX[i];
+                    blockY[i] = originalBlockY[i];
+                }
+                rotationState = originalRotationState; // Revert rotation state
+            }
         }
     }
     Piece* clone() const override {
@@ -379,12 +609,21 @@ public:
         }
     }
 
-    void rotate() override {
+    void rotate(Board& board) override {
         if (!is_active) return; // Only rotate if active
+
+        // Save the current positions of the piece
+        int originalBlockX[4];
+        int originalBlockY[4];
+        for (int i = 0; i < 4; ++i) {
+            originalBlockX[i] = blockX[i];
+            originalBlockY[i] = blockY[i];
+        }
+        int originalRotationState = rotationState;
+        rotationState = (rotationState + 1) % 4;
+
         int jx = blockX[1];
         int jy = blockY[1];
-
-        rotationState = (rotationState + 1) % 4;
 
         if (rotationState == 0) {
             blockX[0] = jx;  blockY[0] = jy - 1;
@@ -409,6 +648,19 @@ public:
             blockX[1] = jx;  blockY[1] = jy;
             blockX[2] = jx + 1;  blockY[2] = jy;
             blockX[3] = jx + 1;  blockY[3] = jy + 1;
+        }
+
+        // Check if the rotated position is valid
+        if (!isValidPosition(board)) {
+            // Try wall kick if not valid
+            if (!tryWallKick(board)) {
+                // If wall kick also fails, revert to the original state
+                for (int i = 0; i < 4; ++i) {
+                    blockX[i] = originalBlockX[i];
+                    blockY[i] = originalBlockY[i];
+                }
+                rotationState = originalRotationState;
+            }
         }
     }
     Piece* clone() const override {
@@ -455,12 +707,21 @@ public:
         }
     }
 
-    void rotate() override {
+    void rotate(Board& board) override {
         if (!is_active) return; // Only rotate if active
+
+        // Save the current positions of the piece
+        int originalBlockX[4];
+        int originalBlockY[4];
+        for (int i = 0; i < 4; ++i) {
+            originalBlockX[i] = blockX[i];
+            originalBlockY[i] = blockY[i];
+        }
+        int originalRotationState = rotationState;
+        rotationState = (rotationState + 1) % 4;
+
         int cx = blockX[1];
         int cy = blockY[1];
-
-        rotationState = (rotationState + 1) % 4;
 
         if (rotationState == 0) {
             blockX[0] = cx + 1;  blockY[0] = cy;
@@ -486,11 +747,23 @@ public:
             blockX[2] = cx + 1;  blockY[2] = cy;
             blockX[3] = cx + 1;  blockY[3] = cy + 1;
         }
+        // Check if the rotated position is valid
+        if (!isValidPosition(board)) {
+            // Try wall kick if not valid
+            if (!tryWallKick(board)) {
+                // If wall kick also fails, revert to the original state
+                for (int i = 0; i < 4; ++i) {
+                    blockX[i] = originalBlockX[i];
+                    blockY[i] = originalBlockY[i];
+                }
+                rotationState = originalRotationState;
+            }
+        }
     }
 
 	Piece* clone() const override {
 		return new S_Piece(*this); // Return a new instance of S_Piece
-  }
+    }
 };
 
 //Z-piece
@@ -532,12 +805,21 @@ public:
         }
     }
 
-    void rotate() override {
+    void rotate(Board& board) override {
         if (!is_active) return; // Only rotate if active
+
+        // Save the current positions of the piece
+        int originalBlockX[4];
+        int originalBlockY[4];
+        for (int i = 0; i < 4; ++i) {
+            originalBlockX[i] = blockX[i];
+            originalBlockY[i] = blockY[i];
+        }
+        int originalRotationState = rotationState;
+        rotationState = (rotationState + 1) % 4;
+
         int zx = blockX[1];
         int zy = blockY[1];
-
-        rotationState = (rotationState + 1) % 4;
 
         if (rotationState == 0) {
             blockX[0] = zx - 1;  blockY[0] = zy;
@@ -563,148 +845,24 @@ public:
             blockX[2] = zx + 1;  blockY[2] = zy;
             blockX[3] = zx + 1;  blockY[3] = zy - 1;
         }
+
+        // Check if the rotated position is valid
+        if (!isValidPosition(board)) {
+            // Try wall kick if not valid
+            if (!tryWallKick(board)) {
+                // If wall kick also fails, revert to the original state
+                for (int i = 0; i < 4; ++i) {
+                    blockX[i] = originalBlockX[i];
+                    blockY[i] = originalBlockY[i];
+                }
+                rotationState = originalRotationState;
+            }
+        }
     }
     Piece* clone() const override {
         return new Z_Piece(*this); // Return a new instance of Z_Piece
     }
 };
-
-
-class Board {
-private:
-    static const int rows = 20;
-    static const int cols = 10;
-    static const int cellSize = 30;
-
-    sf::Color board[rows][cols];       // Each cell stores a color
-    int offsetX;                       // X offset for board position
-    int offsetY;                       // Y offset
-    sf::RectangleShape cell;          // Used to draw each cell
-
-	int score;
-	int linesCleared;
-    int level;
-
-public:
-    Board(int x = 50, int y = 150) : offsetX(x), offsetY(y) {
-        // Initialize all cells to transparent
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j)
-                board[i][j] = sf::Color::Transparent;
-        }
-		score = 0;
-        level = 1;
-        linesCleared = 0;
-        cell.setSize(sf::Vector2f(cellSize, cellSize));
-        cell.setOutlineThickness(1);
-        cell.setOutlineColor(sf::Color(80, 80, 80));
-    }
-
-    void draw(sf::RenderWindow& window) {
-        // Draw boundaries (gray border)
-        for (int row = 0; row < rows + 2; row++) {
-            for (int col = 0; col < cols + 2; col++) {
-                if (row == 0 || row == rows + 1 || col == 0 || col == cols + 1) {
-                    cell.setPosition(offsetX + col * cellSize, offsetY + row * cellSize);
-                    cell.setFillColor(sf::Color(128, 128, 128)); // Gray
-                    window.draw(cell);
-                }
-            }
-        }
-
-        // Draw filled grid cells
-        for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < cols; ++col) {
-                cell.setPosition(offsetX + (col + 1) * cellSize, offsetY + (row + 1) * cellSize);
-                if (board[row][col] != sf::Color::Transparent)
-                    cell.setFillColor(board[row][col]);
-                else
-                    cell.setFillColor(sf::Color::Black); // Empty cell
-
-                window.draw(cell);
-            }
-        }
-    }
-    sf::Color getCell(int row, int col) const {
-        if (row >= 0 && row < rows && col >= 0 && col < cols)
-            return board[row][col];
-        return sf::Color::Black; // Invalid 
-    }
-
-    void setCell(int row, int col, sf::Color color) {
-        if (row >= 0 && row < rows && col >= 0 && col < cols)
-            board[row][col] = color;
-    }
-	void setScore(int condition) {
-		if (condition == 1) {
-			score += 40 * (level + 1);
-		}
-		else if (condition == 2) {
-			score += 100 * (level + 1);
-		}
-		else if (condition == 3) {
-			score += 300 * (level + 1);
-		}
-		else if (condition == 4) {
-			score += 1200 * (level + 1);
-		}
-		else {
-			score += 0;
-		}
-	}
-	void setLinesCleared(int lines) {
-		linesCleared += lines;
-	}
-	int getLinesCleared() const {
-		return linesCleared;
-	}
-    int getScore() const {
-        return score;
-    }
-    int getLevel() const {
-        return level;
-    }
-    void setLevel(int newLevel) {
-        level = newLevel;
-    }
-    int checkAndClearLines() {
-        int linesClearedThisMove = 0; // Track lines cleared in this move
-
-        for (int row = 0; row < rows; ++row) {
-            bool isFull = true;
-
-            for (int col = 0; col < cols; ++col) {
-                if (board[row][col] == sf::Color::Transparent) {
-                    isFull = false;
-                    break;
-                }
-            }
-
-            if (isFull) {
-                ++linesClearedThisMove; // Increment for this move
-                ++linesCleared;         // Increment total lines cleared
-
-                // Clear the full line and shift rows above down
-                for (int r = row; r > 0; --r) {
-                    for (int col = 0; col < cols; ++col) {
-                        board[r][col] = board[r - 1][col];
-                    }
-                }
-
-                // Clear the top row
-                for (int col = 0; col < cols; ++col) {
-                    board[0][col] = sf::Color::Transparent;
-                }
-
-                // Check the same row again since it now contains the row above
-                --row;
-            }
-        }
-
-        return linesClearedThisMove; // Return lines cleared in this move
-    }
-};
-
 
 bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
     sf::Text start("Press S to Start", font, 32);
@@ -844,7 +1002,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                     }
                 }
                 else if (event.key.code == sf::Keyboard::Up) {
-                    currentPiece->rotate();
+                    currentPiece->rotate(board);
                 }
             }
         }

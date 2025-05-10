@@ -36,6 +36,24 @@ public:
 	int getOffsetY() const {
 		return offsetY;
 	}
+    bool isValidPosition(const Board& board) const {
+        for (int i = 0; i < 4; ++i) {
+            int x = blockX[i];
+            int y = blockY[i];
+
+            // Check if the block is out of bounds
+            if (x < 0 || x >= 10 || y < 0 || y >= 20) {
+                return false;
+            }
+
+            // Check if the block overlaps with an existing block on the board
+            if (board.getCell(y, x) != sf::Color::Transparent) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     virtual void draw(sf::RenderWindow& window) = 0;
     virtual void move(int dx, int dy) = 0;
     virtual void rotate() = 0;

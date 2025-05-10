@@ -1080,7 +1080,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             for (int i = 0; i < 4; ++i) {
                 int blockX = currentPiece->getX(i);
                 int blockY = currentPiece->getY(i);
-                if (board.getCell(blockY, blockX) != sf::Color::Transparent) {
+                if (blockY >= 0 && board.getCell(blockY, blockX) != sf::Color::Transparent) {
                     collisionAtSpawn = true;
                     break;
                 }

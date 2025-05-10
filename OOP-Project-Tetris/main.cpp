@@ -7,8 +7,8 @@ using namespace std;
 // Base class: Piece
 class Piece {
 protected:
-    int blockX[4];
-    int blockY[4];
+    int blockX[4] = { 0 };
+    int blockY[4] = { 0 };
     sf::Color color;
     int offsetX = 50;
     int offsetY = 150;
@@ -567,13 +567,20 @@ private:
     int offsetY;                       // Y offset
     sf::RectangleShape cell;          // Used to draw each cell
 
+	int score;
+	int linesCleared;
+    int level;
+
 public:
     Board(int x = 50, int y = 150) : offsetX(x), offsetY(y) {
         // Initialize all cells to transparent
-        for (int i = 0; i < rows; ++i)
+        for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j)
                 board[i][j] = sf::Color::Transparent;
-
+        }
+		score = 0;
+        level = 1;
+        linesCleared = 0;
         cell.setSize(sf::Vector2f(cellSize, cellSize));
         cell.setOutlineThickness(1);
         cell.setOutlineColor(sf::Color(80, 80, 80));
@@ -614,7 +621,41 @@ public:
         if (row >= 0 && row < rows && col >= 0 && col < cols)
             board[row][col] = color;
     }
-    void checkAndClearLines() {
+	void setScore(int condition) {
+		if (condition == 1) {
+			score += 40 * (level + 1);
+		}
+		else if (condition == 2) {
+			score += 100 * (level + 1);
+		}
+		else if (condition == 3) {
+			score += 300 * (level + 1);
+		}
+		else if (condition == 4) {
+			score += 1200 * (level + 1);
+		}
+		else {
+			score += 0;
+		}
+	}
+	void setLinesCleared(int lines) {
+		linesCleared += lines;
+	}
+	int getLinesCleared() const {
+		return linesCleared;
+	}
+    int getScore() const {
+        return score;
+    }
+    int getLevel() const {
+        return level;
+    }
+    void setLevel(int newLevel) {
+        level = newLevel;
+    }
+    int checkAndClearLines() {
+        int linesClearedThisMove = 0; // Track lines cleared in this move
+
         for (int row = 0; row < rows; ++row) {
             bool isFull = true;
 
@@ -626,21 +667,27 @@ public:
             }
 
             if (isFull) {
-                // clear full lines
+                ++linesClearedThisMove; // Increment for this move
+                ++linesCleared;         // Increment total lines cleared
+
+                // Clear the full line and shift rows above down
                 for (int r = row; r > 0; --r) {
                     for (int col = 0; col < cols; ++col) {
                         board[r][col] = board[r - 1][col];
                     }
                 }
 
+                // Clear the top row
                 for (int col = 0; col < cols; ++col) {
                     board[0][col] = sf::Color::Transparent;
                 }
 
                 // Check the same row again since it now contains the row above
-                ++row;
+                --row;
             }
         }
+
+        return linesClearedThisMove; // Return lines cleared in this move
     }
 };
 
@@ -813,10 +860,35 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
 
             dropClock.restart();
         }
-		// Check for full lines and clear them
-		if (currentPiece) {
-			board.checkAndClearLines();
-		}
+		// Checking for full lines and clear them
+        if (currentPiece) {
+            int cleared = board.checkAndClearLines(); // Get lines cleared in this move
+            if (cleared > 0) {
+                // classic Tetris scoring system
+                if (cleared == 1) {
+                    board.setScore(1); // Single line
+                }
+                else if (cleared == 2) {
+                    board.setScore(2); // Double line
+                }
+                else if (cleared == 3) {
+                    board.setScore(3); // Triple line
+                }
+                else if (cleared == 4) {
+                    board.setScore(4); // Tetris (4 lines)
+                }
+
+                // Level up every 10 lines
+                if (board.getLinesCleared() >= board.getLevel() * 10) {
+                    board.setLevel(board.getLevel() + 1);
+                    dropDelay *= 0.8f; // Make blocks fall faster
+                    cout << "\n\nLevel Up! Current Level: " << board.getLevel() << endl;
+                }
+
+                // Output the updated score
+                cout << "\nScore: " << board.getScore() << "\nLines Cleared: " << board.getLinesCleared() << "\nLevel: " << board.getLevel() << endl;
+            }
+        }
 
         // Game over check during spawn
         if (!isGameOver && !currentPiece) {

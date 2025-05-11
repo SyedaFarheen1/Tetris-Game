@@ -768,6 +768,54 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     Board board;
     bool isGameOver = false;
 
+    sf::Font fontLogo2;
+    if (!fontLogo2.loadFromFile("C:\\WINDOWS\\Fonts\\comicbd.ttf")) {
+        std::cerr << "Error loading font!" << std::endl;
+        return;
+    }
+    //TETRIS text
+    sf::Text T("T", fontLogo2, 80);
+    T.setFillColor(sf::Color::Red);
+    T.setPosition(300, 30);
+
+    sf::Text E("E", fontLogo2, 80);
+    E.setFillColor(sf::Color(255, 155, 0));
+    E.setPosition(350, 30);
+
+    sf::Text Tt("T", fontLogo2, 80);
+    Tt.setFillColor(sf::Color::Yellow);
+    Tt.setPosition(400, 30);
+
+    sf::Text R("R", fontLogo2, 80);
+    R.setFillColor(sf::Color::Green);
+    R.setPosition(450, 30);
+
+    sf::Text I("I", fontLogo2, 80);
+    I.setFillColor(sf::Color::Blue);
+    I.setPosition(500, 30);
+
+    sf::Text S("S", fontLogo2, 80);
+    S.setFillColor(sf::Color::Magenta);
+    S.setPosition(550, 30);
+
+    //background gradient
+     //gradient background
+    sf::VertexArray gradient2(sf::Quads, 4);
+
+    const int windowWidth = 1200;
+    const int windowHeight = 1000;
+
+    gradient2[0].position = sf::Vector2f(0, 0);
+    gradient2[1].position = sf::Vector2f(windowWidth, 0);
+    gradient2[2].position = sf::Vector2f(windowWidth, windowHeight);
+    gradient2[3].position = sf::Vector2f(0, windowHeight);
+
+    gradient2[0].color = sf::Color(48, 25, 52);
+    gradient2[1].color = sf::Color(48, 25, 52);
+    gradient2[2].color = sf::Color(0, 0, 100);
+    gradient2[3].color = sf::Color(0, 0, 100);
+
+
     // Load font for Game Over text
     if (!font.loadFromFile("C:\\WINDOWS\\Fonts\\cour.ttf")) {
         std::cerr << "Error loading font!" << std::endl;
@@ -777,7 +825,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     sf::Text gameOverText("GAME OVER", font, 50);
     gameOverText.setFillColor(sf::Color::Red);
     gameOverText.setStyle(sf::Text::Bold);
-    gameOverText.setPosition(450, 350);
+    gameOverText.setPosition(480, 350);
    
     // Seed the random number generator
     srand(static_cast<unsigned int>(time(nullptr)));
@@ -922,14 +970,25 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
         }
 
         window.clear(sf::Color::Black);
+        window.draw(gradient2);
         board.draw(window);
+
         if (currentPiece && !isGameOver)
             currentPiece->draw(window);
 
         if (isGameOver) {
             window.draw(gameOverText);
         }
+
+        window.draw(T);
+        window.draw(E);
+        window.draw(Tt);
+        window.draw(R);
+        window.draw(I);
+        window.draw(S);
+
         window.display();
+        
     }
 
     for (int i = 0; i < 7; ++i)

@@ -418,7 +418,7 @@ public:
     }
 };
 
-//Square-piece
+// Derived class: Square-piece
 class Sq_Piece : public Piece {
 private:
     sf::RectangleShape blocks[4];
@@ -473,8 +473,7 @@ public:
     }
 };
 
-
-// L_Piece
+// Derived class: L_Piece
 class L_Piece : public Piece {
 private:
     sf::RectangleShape blocks[4];
@@ -573,7 +572,7 @@ public:
     }
 };
 
-//J-piece
+// Derived class: J-piece
 class J_Piece : public Piece {
 private:
     sf::RectangleShape blocks[4];
@@ -671,7 +670,7 @@ public:
     }
 };
 
-//S-piece
+//Derived class: S-piece
 class S_Piece : public Piece {
 private:
     sf::RectangleShape blocks[4];
@@ -769,7 +768,7 @@ public:
     }
 };
 
-//Z-piece
+//Derived class: Z-piece
 class Z_Piece : public Piece {
 private:
     sf::RectangleShape blocks[4];
@@ -999,6 +998,9 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     int highScore = 0;
     int level = 0;
 
+    bool isPaused = false;
+    int selectedOption = 0; // 0 = Resume, 1 = Restart
+
     sf::Font fontLogo2;
     if (!fontLogo2.loadFromFile("C:\\WINDOWS\\Fonts\\comicbd.ttf")) {
         std::cerr << "Error loading font!" << std::endl;
@@ -1030,7 +1032,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     S.setPosition(550, 30);
 
     //background gradient
-     //gradient background
+    //gradient background
     sf::VertexArray gradient2(sf::Quads, 4);
 
     const int windowWidth = 1200;
@@ -1045,6 +1047,51 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     gradient2[1].color = sf::Color(48, 25, 52);
     gradient2[2].color = sf::Color(0, 0, 100);
     gradient2[3].color = sf::Color(0, 0, 100);
+
+    // pause menu box
+    sf::RectangleShape pauseMenuBox(sf::Vector2f(400, 400));
+    pauseMenuBox.setFillColor(sf::Color(0, 0, 0, 150));
+    pauseMenuBox.setOutlineThickness(3);
+    pauseMenuBox.setOutlineColor(sf::Color::White);
+    pauseMenuBox.setPosition(250, 150);
+
+    // pause title
+    sf::Text pauseText("Game Paused", fontLogo2, 50);
+    pauseText.setFillColor(sf::Color::White);
+    pauseText.setPosition(250 + (400 - pauseText.getLocalBounds().width) / 2, 170);
+
+    // resume button
+    sf::RectangleShape resumeBox(sf::Vector2f(220, 60)); // increased height
+    resumeBox.setPosition(340, 260);
+    resumeBox.setFillColor(sf::Color::Transparent);
+    resumeBox.setOutlineThickness(2);
+    resumeBox.setOutlineColor(sf::Color::White);
+
+    sf::Text resumeText("Resume", fontLogo2, 40);
+    resumeText.setFillColor(sf::Color::White);
+    resumeText.setPosition(345 + (210 - resumeText.getLocalBounds().width) / 2, 268); // centered
+
+    // restart button
+    sf::RectangleShape restartBox(sf::Vector2f(220, 60));
+    restartBox.setPosition(340, 340); // spacing fixed manually
+    restartBox.setFillColor(sf::Color::Transparent);
+    restartBox.setOutlineThickness(2);
+    restartBox.setOutlineColor(sf::Color::White);
+
+    sf::Text restartText("Restart", fontLogo2, 40);
+    restartText.setFillColor(sf::Color::White);
+    restartText.setPosition(345 + (210 - restartText.getLocalBounds().width) / 2, 348); // centered
+
+    // exit button
+    sf::RectangleShape exitBox(sf::Vector2f(220, 60));
+    exitBox.setPosition(340, 420); // same spacing
+    exitBox.setFillColor(sf::Color::Transparent);
+    exitBox.setOutlineThickness(2);
+    exitBox.setOutlineColor(sf::Color::White);
+
+    sf::Text exitText("Exit", fontLogo2, 40);
+    exitText.setFillColor(sf::Color::White);
+    exitText.setPosition(345 + (210 - exitText.getLocalBounds().width) / 2, 428); // centered
 
 
     // Load font for Game Over text
@@ -1117,61 +1164,116 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-
-            if (!isGameOver && currentPiece && event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Left) {
-                    bool canMoveLeft = true;
-                    for (int i = 0; i < 4; ++i) {
-                        int blockX = currentPiece->getX(i);
-                        int blockY = currentPiece->getY(i);
-                        if (blockX - 1 < 0 || board.getCell(blockY, blockX - 1) != sf::Color::Transparent) {
-                            canMoveLeft = false;
-                            break;
-                        }
-                    }
-                    if (canMoveLeft)
-                        currentPiece->move(-1, 0);
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Escape && !isGameOver) {
+                    isPaused = !isPaused; // Toggle pause state only if the game is not over
                 }
-                else if (event.key.code == sf::Keyboard::Right) {
-                    bool canMoveRight = true;
-                    for (int i = 0; i < 4; ++i) {
-                        int blockX = currentPiece->getX(i);
-                        int blockY = currentPiece->getY(i);
-                        if (blockX + 1 >= 10 || board.getCell(blockY, blockX + 1) != sf::Color::Transparent) {
-                            canMoveRight = false;
-                            break;
-                        }
+                if (isPaused) {
+                    cout << "\nGame Paused!" << endl;
+                    // Handle navigation in pause menu
+                    if (event.key.code == sf::Keyboard::Up) {
+                        selectedOption = (selectedOption - 1 + 3) % 3; // Navigate up + wrap around
                     }
-                    if (canMoveRight)
-                        currentPiece->move(1, 0);
+                    else if (event.key.code == sf::Keyboard::Down) {
+                        selectedOption = (selectedOption + 1) % 3; // Navigate down + wrap around
+                    }
+                    else if (event.key.code == sf::Keyboard::Enter) {
+                        if (selectedOption == 0) {
+                            cout << "\nResuming Game" << endl;
+                            isPaused = false; // Resume game
+                        }
+                        else if (selectedOption == 1) {
+                            // Restart game
+                            cout << "\nGame Restarted!" << endl;
+                            delete currentPiece;
+                            currentPiece = nullptr;
+                            board = Board(); // Reset board
+                            isGameOver = false;
+                            isPaused = false;
+                            dropClock.restart();
+                        }
+						else if (selectedOption == 2) {
+                            cout << "\nExiting Game! Goodbye!" << endl;
+							window.close(); // Exit game
+						}
+                    }
                 }
-                else if (event.key.code == sf::Keyboard::Down) {
-                    bool canMoveDown = true;
-                    for (int i = 0; i < 4; ++i) {
-                        int blockX = currentPiece->getX(i);
-                        int blockY = currentPiece->getY(i);
-                        if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
-                            canMoveDown = false;
-                            break;
-                        }
-                    }
-                    if (canMoveDown) {
-                        currentPiece->move(0, 1);
-                    }
-                    else {
+                else if (!isGameOver && currentPiece && event.type == sf::Event::KeyPressed) {
+                    if (event.key.code == sf::Keyboard::Left) {
+                        bool canMoveLeft = true;
                         for (int i = 0; i < 4; ++i) {
                             int blockX = currentPiece->getX(i);
                             int blockY = currentPiece->getY(i);
-                            board.setCell(blockY, blockX, currentPiece->getColor());
+                            if (blockX - 1 < 0 || board.getCell(blockY, blockX - 1) != sf::Color::Transparent) {
+                                canMoveLeft = false;
+                                break;
+                            }
                         }
-                        delete currentPiece;
-                        currentPiece = nullptr;
+                        if (canMoveLeft)
+                            currentPiece->move(-1, 0);
+                    }
+                    else if (event.key.code == sf::Keyboard::Right) {
+                        bool canMoveRight = true;
+                        for (int i = 0; i < 4; ++i) {
+                            int blockX = currentPiece->getX(i);
+                            int blockY = currentPiece->getY(i);
+                            if (blockX + 1 >= 10 || board.getCell(blockY, blockX + 1) != sf::Color::Transparent) {
+                                canMoveRight = false;
+                                break;
+                            }
+                        }
+                        if (canMoveRight)
+                            currentPiece->move(1, 0);
+                    }
+                    else if (event.key.code == sf::Keyboard::Down) {
+                        bool canMoveDown = true;
+                        for (int i = 0; i < 4; ++i) {
+                            int blockX = currentPiece->getX(i);
+                            int blockY = currentPiece->getY(i);
+                            if (blockY + 1 >= 20 || board.getCell(blockY + 1, blockX) != sf::Color::Transparent) {
+                                canMoveDown = false;
+                                break;
+                            }
+                        }
+                        if (canMoveDown) {
+                            currentPiece->move(0, 1);
+                        }
+                        else {
+                            for (int i = 0; i < 4; ++i) {
+                                int blockX = currentPiece->getX(i);
+                                int blockY = currentPiece->getY(i);
+                                board.setCell(blockY, blockX, currentPiece->getColor());
+                            }
+                            delete currentPiece;
+                            currentPiece = nullptr;
+                        }
+                    }
+                    else if (event.key.code == sf::Keyboard::Up) {
+                        currentPiece->rotate(board);
                     }
                 }
-                else if (event.key.code == sf::Keyboard::Up) {
-                    currentPiece->rotate(board);
-                }
             }
+        }
+		// Handle game pause
+        if (isPaused) {
+            // Update pause menu UI
+            resumeBox.setOutlineColor(selectedOption == 0 ? sf::Color::Green : sf::Color::White);
+            restartBox.setOutlineColor(selectedOption == 1 ? sf::Color::Green : sf::Color::White);
+			exitBox.setOutlineColor(selectedOption == 2 ? sf::Color::Red : sf::Color::White);
+
+            // Render pause menu
+            window.clear(sf::Color::Black);
+            window.draw(gradient2);
+            window.draw(pauseMenuBox);
+            window.draw(pauseText);
+            window.draw(resumeBox);
+            window.draw(resumeText);
+            window.draw(restartBox);
+            window.draw(restartText);
+			window.draw(exitBox);
+			window.draw(exitText);
+            window.display();
+            continue; // Skip the rest of the game loop while paused
         }
 
         if (!isGameOver && currentPiece && dropClock.getElapsedTime().asSeconds() >= dropDelay) {

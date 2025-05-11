@@ -1061,7 +1061,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     pauseText.setPosition(250 + (400 - pauseText.getLocalBounds().width) / 2, 170);
 
     // resume button
-    sf::RectangleShape resumeBox(sf::Vector2f(220, 60)); // increased height
+    sf::RectangleShape resumeBox(sf::Vector2f(220, 60));
     resumeBox.setPosition(340, 260);
     resumeBox.setFillColor(sf::Color::Transparent);
     resumeBox.setOutlineThickness(2);
@@ -1073,7 +1073,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
 
     // restart button
     sf::RectangleShape restartBox(sf::Vector2f(220, 60));
-    restartBox.setPosition(340, 340); // spacing fixed manually
+    restartBox.setPosition(340, 340); 
     restartBox.setFillColor(sf::Color::Transparent);
     restartBox.setOutlineThickness(2);
     restartBox.setOutlineColor(sf::Color::White);
@@ -1084,7 +1084,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
 
     // exit button
     sf::RectangleShape exitBox(sf::Vector2f(220, 60));
-    exitBox.setPosition(340, 420); // same spacing
+    exitBox.setPosition(340, 420);
     exitBox.setFillColor(sf::Color::Transparent);
     exitBox.setOutlineThickness(2);
     exitBox.setOutlineColor(sf::Color::White);

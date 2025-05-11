@@ -642,13 +642,80 @@ public:
 
 
 bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
+
+    //gradient background
+    sf::VertexArray gradient(sf::Quads, 4);
+
+    const int windowWidth = 1200;
+    const int windowHeight = 1000;
+
+    gradient[0].position = sf::Vector2f(0, 0);
+    gradient[1].position = sf::Vector2f(windowWidth, 0);
+    gradient[2].position = sf::Vector2f(windowWidth, windowHeight);
+    gradient[3].position = sf::Vector2f(0, windowHeight);
+
+    gradient[0].color = sf::Color(48, 25, 52);
+    gradient[1].color = sf::Color(48, 25, 52);
+    gradient[2].color = sf::Color(0, 0, 100);
+    gradient[3].color = sf::Color(0, 0, 100);
+
+
     sf::Text start("Press S to Start", font, 32);
-    start.setFillColor(sf::Color::Yellow);
-    start.setPosition(280, 250);
+    start.setFillColor(sf::Color::White);
+    start.setPosition(280, 400);
 
     sf::Text exit("Press Esc to Exit", font, 32);
-    exit.setFillColor(sf::Color::Red);
-    exit.setPosition(280, 320);
+    exit.setFillColor(sf::Color::White);
+    exit.setPosition(280, 500);
+
+    sf::Font fontLogo;
+    if (!fontLogo.loadFromFile("C:\\WINDOWS\\Fonts\\comicbd.ttf")) {
+        std::cerr << "Error loading font!" << std::endl;
+        return false;
+    }
+    sf::Text T("T", fontLogo, 200);
+    T.setFillColor(sf::Color::Red);
+    T.setPosition(100, 100);
+
+    sf::Text E("E", fontLogo, 200);
+    E.setFillColor(sf::Color(255,155,0));
+    E.setPosition(220, 100);
+
+    sf::Text Tt("T", fontLogo, 200);
+    Tt.setFillColor(sf::Color::Yellow);
+    Tt.setPosition(330, 100);
+
+    sf::Text R("R", fontLogo, 200);
+    R.setFillColor(sf::Color::Green);
+    R.setPosition(440, 100);
+
+    sf::Text I("I", fontLogo, 200);
+    I.setFillColor(sf::Color::Blue);
+    I.setPosition(550, 100);
+
+    sf::Text S("S", fontLogo, 200);
+    S.setFillColor(sf::Color::Magenta);
+    S.setPosition(660, 100);
+
+
+    float padding = 15.f;
+
+    // Box around "Press S to Start"
+    sf::FloatRect startBounds = start.getGlobalBounds();
+    sf::RectangleShape boxStart(sf::Vector2f(startBounds.width + 2 * padding, startBounds.height + 2 * padding));
+    boxStart.setPosition(startBounds.left - padding, startBounds.top - padding);
+    boxStart.setFillColor(sf::Color::Transparent);
+    boxStart.setOutlineColor(sf::Color::White);
+    boxStart.setOutlineThickness(2.f);
+
+    // Box around "Press Esc to Exit"
+    sf::FloatRect exitBounds = exit.getGlobalBounds();
+    sf::RectangleShape boxExit(sf::Vector2f(exitBounds.width + 2 * padding, exitBounds.height + 2 * padding));
+    boxExit.setPosition(exitBounds.left - padding, exitBounds.top - padding);
+    boxExit.setFillColor(sf::Color::Transparent);
+    boxExit.setOutlineColor(sf::Color::White);
+    boxExit.setOutlineThickness(2.f);
+
 
     while (window.isOpen()) {
         sf::Event event;
@@ -667,8 +734,18 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
         }
 
         window.clear(sf::Color::Black);
+        window.draw(gradient);
+        window.draw(boxStart);
         window.draw(start);
+        window.draw(boxExit);
         window.draw(exit);
+        window.draw(T);
+        window.draw(E);
+        window.draw(Tt);
+        window.draw(R);
+        window.draw(I);
+        window.draw(S);
+
         window.display();
     }
     return false;

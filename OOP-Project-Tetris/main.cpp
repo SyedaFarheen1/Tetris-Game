@@ -978,6 +978,7 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
 }
 
 void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
+
     Piece* templates[7];
     templates[0] = new T_Piece();
     templates[1] = new I_Piece();
@@ -993,6 +994,10 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
 
     Board board;
     bool isGameOver = false;
+
+    int score = 0;
+    int highScore = 0;
+    int level = 0;
 
     sf::Font fontLogo2;
     if (!fontLogo2.loadFromFile("C:\\WINDOWS\\Fonts\\comicbd.ttf")) {
@@ -1048,11 +1053,45 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
         return;
     }
 
-    sf::Text gameOverText("GAME OVER", font, 50);
+    sf::Text gameOverText("GAME OVER", fontLogo2, 50);
     gameOverText.setFillColor(sf::Color::Red);
     gameOverText.setStyle(sf::Text::Bold);
-    gameOverText.setPosition(480, 350);
+    gameOverText.setPosition(490, 530);
    
+    
+    //display Current score
+    sf::Text scoreText;
+    scoreText.setFont(fontLogo2);
+    scoreText.setCharacterSize(24);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setPosition(630, 360);
+    
+    sf::Text CurrentScore("Current Score", fontLogo2, 40);
+    CurrentScore.setFillColor(sf::Color::White);
+    CurrentScore.setPosition(520, 300);
+
+    //display high score
+    sf::Text HighScoreText;
+    HighScoreText.setFont(fontLogo2);
+    HighScoreText.setCharacterSize(24);
+    HighScoreText.setFillColor(sf::Color::White);
+    HighScoreText.setPosition(630, 210);
+
+    sf::Text HighScore("High Score", fontLogo2, 40);
+    HighScore.setFillColor(sf::Color::White);
+    HighScore.setPosition(530, 150);
+
+    //display level
+    sf::Text Level;
+    Level.setFont(fontLogo2);
+    Level.setCharacterSize(24);
+    Level.setFillColor(sf::Color::White);
+    Level.setPosition(630, 480);
+
+    sf::Text GameLevel("Level", fontLogo2, 40);
+    GameLevel.setFillColor(sf::Color::White);
+    GameLevel.setPosition(585,420);
+
     // Seed the random number generator
     srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -1190,6 +1229,8 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             }
         }
 
+       
+
         // Game over check during spawn
         if (!isGameOver && !currentPiece) {
             if (bagIndex >= 7)
@@ -1231,13 +1272,25 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             window.draw(gameOverText);
         }
 
+        //Current Score
+        score = board.getScore();
+        level = board.getLevel();
+        scoreText.setString(std::to_string(score));
+        HighScoreText.setString(std::to_string(highScore));
+        Level.setString(std::to_string(level));
+        
         window.draw(T);
         window.draw(E);
         window.draw(Tt);
         window.draw(R);
         window.draw(I);
         window.draw(S);
-
+        window.draw(CurrentScore);
+        window.draw(scoreText);
+        window.draw(HighScore);
+        window.draw(HighScoreText);
+        window.draw(GameLevel);
+        window.draw(Level);
         window.display();
         
     }

@@ -429,10 +429,10 @@ public:
         color = sf::Color::Yellow;
 
         // A 2x2 square in the top-middle of the board
-        blockX[0] = 0; blockY[0] = 0;
-        blockX[1] = 1; blockY[1] = 0;
-        blockX[2] = 0; blockY[2] = 1;
-        blockX[3] = 1; blockY[3] = 1;
+        blockX[0] = 4; blockY[0] = 0;
+        blockX[1] = 5; blockY[1] = 0;
+        blockX[2] = 4; blockY[2] = 1;
+        blockX[3] = 5; blockY[3] = 1;
 
         offsetX = 4 * 30;
         offsetY = 0;

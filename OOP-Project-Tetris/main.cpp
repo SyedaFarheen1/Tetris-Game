@@ -1167,9 +1167,12 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape && !isGameOver) {
                     isPaused = !isPaused; // Toggle pause state only if the game is not over
+                    if (isPaused)
+                        cout << "\nGame Paused!" << endl;
+                    else
+                        cout << "\nGame Unpaused!" << endl;
                 }
                 if (isPaused) {
-                    cout << "\nGame Paused!" << endl;
                     // Handle navigation in pause menu
                     if (event.key.code == sf::Keyboard::Up) {
                         selectedOption = (selectedOption - 1 + 3) % 3; // Navigate up + wrap around

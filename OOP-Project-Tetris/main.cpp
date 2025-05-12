@@ -871,6 +871,12 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
     //gradient background
     sf::VertexArray gradient(sf::Quads, 4);
 
+    sf::Font fontLogo;
+    if (!fontLogo.loadFromFile("C:\\WINDOWS\\Fonts\\comicbd.ttf")) {
+        std::cerr << "Error loading font!" << std::endl;
+        return false;
+    }
+
     const int windowWidth = 1200;
     const int windowHeight = 1000;
 
@@ -884,20 +890,42 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
     gradient[2].color = sf::Color(0, 0, 100);
     gradient[3].color = sf::Color(0, 0, 100);
 
-
-    sf::Text start("Press S to Start", font, 32);
+    //start text
+    sf::Text start("Start", fontLogo, 32);
     start.setFillColor(sf::Color::White);
-    start.setPosition(280, 400);
+    start.setPosition(260 + (400 - start.getLocalBounds().width) / 2, 430);
 
-    sf::Text exit("Press Esc to Exit", font, 32);
+    // Box around start
+    sf::RectangleShape startBox(sf::Vector2f(220, 60));
+    startBox.setPosition(350, 420);
+    startBox.setFillColor(sf::Color::Transparent);
+    startBox.setOutlineThickness(3);
+    startBox.setOutlineColor(sf::Color::White);
+    
+    //game rules text
+    sf::Text gameRules("Game Rules", fontLogo, 32);
+    gameRules.setFillColor(sf::Color::White);
+    gameRules.setPosition(260 + (400 - gameRules.getLocalBounds().width) / 2, 500);
+
+    // box around game rules
+    sf::RectangleShape gameRule(sf::Vector2f(220, 60));
+    gameRule.setPosition(350, 490);
+    gameRule.setFillColor(sf::Color::Transparent);
+    gameRule.setOutlineThickness(2);
+    gameRule.setOutlineColor(sf::Color::White);
+
+    //exit text
+    sf::Text exit("Exit", fontLogo, 32);
     exit.setFillColor(sf::Color::White);
-    exit.setPosition(280, 500);
+    exit.setPosition(260 + (400 - exit.getLocalBounds().width) / 2, 570);
 
-    sf::Font fontLogo;
-    if (!fontLogo.loadFromFile("C:\\WINDOWS\\Fonts\\comicbd.ttf")) {
-        std::cerr << "Error loading font!" << std::endl;
-        return false;
-    }
+    //box around exit
+    sf::RectangleShape exitBox(sf::Vector2f(220, 60));
+    exitBox.setPosition(350, 560);
+    exitBox.setFillColor(sf::Color::Transparent);
+    exitBox.setOutlineThickness(2);
+    exitBox.setOutlineColor(sf::Color::White);
+    
     sf::Text T("T", fontLogo, 200);
     T.setFillColor(sf::Color::Red);
     T.setPosition(100, 100);
@@ -925,23 +953,6 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
 
     float padding = 15.f;
 
-    // Box around "Press S to Start"
-    sf::FloatRect startBounds = start.getGlobalBounds();
-    sf::RectangleShape boxStart(sf::Vector2f(startBounds.width + 2 * padding, startBounds.height + 2 * padding));
-    boxStart.setPosition(startBounds.left - padding, startBounds.top - padding);
-    boxStart.setFillColor(sf::Color::Transparent);
-    boxStart.setOutlineColor(sf::Color::White);
-    boxStart.setOutlineThickness(2.f);
-
-    // Box around "Press Esc to Exit"
-    sf::FloatRect exitBounds = exit.getGlobalBounds();
-    sf::RectangleShape boxExit(sf::Vector2f(exitBounds.width + 2 * padding, exitBounds.height + 2 * padding));
-    boxExit.setPosition(exitBounds.left - padding, exitBounds.top - padding);
-    boxExit.setFillColor(sf::Color::Transparent);
-    boxExit.setOutlineColor(sf::Color::White);
-    boxExit.setOutlineThickness(2.f);
-
-
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -960,10 +971,12 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
 
         window.clear(sf::Color::Black);
         window.draw(gradient);
-        window.draw(boxStart);
+        window.draw(startBox);
         window.draw(start);
-        window.draw(boxExit);
+        window.draw(exitBox);
         window.draw(exit);
+        window.draw(gameRules);
+        window.draw(gameRule);
         window.draw(T);
         window.draw(E);
         window.draw(Tt);
@@ -999,7 +1012,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     int level = 0;
 
     bool isPaused = false;
-    int selectedOption = 0; // 0 = Resume, 1 = Restart, 2 = Exit 
+    int selectedOption = 0; // 0 = Resume, 1 = Restart
 
     sf::Font fontLogo2;
     if (!fontLogo2.loadFromFile("C:\\WINDOWS\\Fonts\\comicbd.ttf")) {
@@ -1032,7 +1045,6 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     S.setPosition(550, 30);
 
     //background gradient
-    //gradient background
     sf::VertexArray gradient2(sf::Quads, 4);
 
     const int windowWidth = 1200;
@@ -1165,7 +1177,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::P && !isGameOver) {
+                if (event.key.code == sf::Keyboard::Escape && !isGameOver) {
                     isPaused = !isPaused; // Toggle pause state only if the game is not over
                     if (isPaused)
                         cout << "\nGame Paused!" << endl;

@@ -3,6 +3,11 @@
 #include <ctime>   // For time()
 #include <iostream>
 #include <fstream>
+// for sound 
+#include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
 using namespace std;
 
 class Board {
@@ -869,7 +874,7 @@ public:
 };
 
 bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
-
+    PlaySound(TEXT("sounds/start.wav"), NULL, SND_FILENAME | SND_ASYNC);
     //gradient background
     sf::VertexArray gradient(sf::Quads, 4);
 
@@ -1011,12 +1016,15 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
             if (!showRules) {
                 if (event.type == sf::Event::KeyPressed) {
                     if (event.key.code == sf::Keyboard::Up) {
+                        PlaySound(TEXT("sounds/menu.wav"), NULL, SND_ASYNC | SND_FILENAME);
                         selectIndex = (selectIndex - 1 + 3) % 3;
                     }
                     else if (event.key.code == sf::Keyboard::Down) {
+                        PlaySound(TEXT("sounds/menu.wav"), NULL, SND_ASYNC | SND_FILENAME);
                         selectIndex = (selectIndex + 1) % 3;
                     }
                     else if (event.key.code == sf::Keyboard::Enter) {
+                        PlaySound(TEXT("sounds/menu.wav"), NULL, SND_ASYNC | SND_FILENAME);
                         if (selectIndex == 0) {
                             return true;
                         }
@@ -1032,6 +1040,7 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
 
             }
             else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape){
+                PlaySound(TEXT("sounds/menu.wav"), NULL, SND_ASYNC | SND_FILENAME);
                 showRules = false;
 
         }
@@ -1285,6 +1294,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::P && !isGameOver) {
+                    PlaySound(TEXT("sounds/menu.wav"), NULL, SND_ASYNC | SND_FILENAME);
                     isPaused = !isPaused; // Toggle pause state only if the game is not over
                     if (isPaused)
                         cout << "\nGame Paused!" << endl;
@@ -1294,12 +1304,15 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                 if (isPaused) {
                     // Handle navigation in pause menu
                     if (event.key.code == sf::Keyboard::Up) {
+                        PlaySound(TEXT("sounds/menu.wav"), NULL, SND_ASYNC | SND_FILENAME);
                         selectedOption = (selectedOption - 1 + 3) % 3; // Navigate up + wrap around
                     }
                     else if (event.key.code == sf::Keyboard::Down) {
+                        PlaySound(TEXT("sounds/menu.wav"), NULL, SND_ASYNC | SND_FILENAME);
                         selectedOption = (selectedOption + 1) % 3; // Navigate down + wrap around
                     }
                     else if (event.key.code == sf::Keyboard::Enter) {
+                        PlaySound(TEXT("sounds/menu.wav"), NULL, SND_ASYNC | SND_FILENAME);
                         if (selectedOption == 0) {
                             cout << "\nResuming Game" << endl;
                             isPaused = false; // Resume game
@@ -1361,6 +1374,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                             currentPiece->move(0, 1);
                         }
                         else {
+                            PlaySound(TEXT("sounds/block.wav"), NULL, SND_FILENAME | SND_ASYNC);
                             for (int i = 0; i < 4; ++i) {
                                 int blockX = currentPiece->getX(i);
                                 int blockY = currentPiece->getY(i);
@@ -1409,6 +1423,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
                 }
             }
             if (atBottom) {
+                PlaySound(TEXT("sounds/block.wav"), NULL, SND_ASYNC | SND_FILENAME);
                 for (int i = 0; i < 4; ++i) {
                     int blockX = currentPiece->getX(i);
                     int blockY = currentPiece->getY(i);
@@ -1427,6 +1442,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
         if (currentPiece) {
             int cleared = board.checkAndClearLines(); // Get lines cleared in this move
             if (cleared > 0) {
+                PlaySound(TEXT("sounds/score.wav"), NULL, SND_ASYNC | SND_FILENAME);
                 // classic Tetris scoring system
                 if (cleared == 1) {
                     board.setScore(1); // Single line
@@ -1491,12 +1507,13 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             currentPiece->draw(window);
 
         if (isGameOver) {
+            PlaySound(TEXT("sounds/game-over.wav"), NULL, SND_ASYNC | SND_FILENAME);
+
             // Update high score if the current score is greater
             if (score > highScore) {
                 highScore = score;
                 saveHighScore("highscore.txt", highScore);
             }
-
 
             // Render everything in the same pass
             window.clear(sf::Color::Black);

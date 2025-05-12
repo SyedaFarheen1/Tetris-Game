@@ -1471,7 +1471,34 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             currentPiece->draw(window);
 
         if (isGameOver) {
+            int currentScore = board.getScore();     // Get current score
+            int currentLevel = board.getLevel();     // Get current level
+            //  int highScore = board.getHighScore();    // Optional: if tracking high score separately
+
+              // Set text strings to show updated values
+            CurrentScore.setString("Current Score\n" + std::to_string(currentScore));
+            HighScore.setString("High Score\n" + std::to_string(highScore));
+            Level.setString("Level\n" + std::to_string(currentLevel));
+
+            window.draw(T);
+            window.draw(E);
+            window.draw(Tt);
+            window.draw(R);
+            window.draw(I);
+            window.draw(S);
+            window.draw(CurrentScore);
+            //window.draw(scoreText);
+            window.draw(HighScore);
+            //window.draw(HighScoreText);
+            //window.draw(GameLevel);
+            window.draw(Level);
+
             window.draw(gameOverText);
+            window.display();
+
+            // Wait and then show start screen
+            sf::sleep(sf::seconds(3.0));
+            showStartScreen(window, font);
         }
 
         //Current Score

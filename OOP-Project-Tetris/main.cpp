@@ -1177,7 +1177,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Escape && !isGameOver) {
+                if (event.key.code == sf::Keyboard::P && !isGameOver) {
                     isPaused = !isPaused; // Toggle pause state only if the game is not over
                     if (isPaused)
                         cout << "\nGame Paused!" << endl;

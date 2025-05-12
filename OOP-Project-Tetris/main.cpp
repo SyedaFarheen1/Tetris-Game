@@ -388,16 +388,17 @@ public:
         int Iy = blockY[1];
 
         if (rotationState == 0) {
-            blockX[0] = Ix - 1; blockY[0] = Iy;
-            blockX[1] = Ix;     blockY[1] = Iy;
-            blockX[2] = Ix + 1; blockY[2] = Iy;
-            blockX[3] = Ix + 2; blockY[3] = Iy;
-        }
-        else if (rotationState == 1) {
             blockX[0] = Ix; blockY[0] = Iy - 1;
             blockX[1] = Ix; blockY[1] = Iy;
             blockX[2] = Ix; blockY[2] = Iy + 1;
             blockX[3] = Ix; blockY[3] = Iy + 2;
+           
+        }
+        else if (rotationState == 1) {
+            blockX[0] = Ix - 1; blockY[0] = Iy;
+            blockX[1] = Ix;     blockY[1] = Iy;
+            blockX[2] = Ix + 1; blockY[2] = Iy;
+            blockX[3] = Ix + 2; blockY[3] = Iy;
         }
 
 		// Check if the new position is valid

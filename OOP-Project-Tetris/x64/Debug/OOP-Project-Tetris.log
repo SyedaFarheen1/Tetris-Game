@@ -1,20 +1,20 @@
 ﻿  main.cpp
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(43,72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(43,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(53,74): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(53,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(259,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(259,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(362,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(362,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(454,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(454,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(505,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(505,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(603,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(603,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(701,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(701,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(799,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Noorhan\source\repos\Tetris-Game3\OOP-Project-Tetris\main.cpp(799,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  OOP-Project-Tetris.vcxproj -> C:\Users\Noorhan\source\repos\Tetris-Game3\x64\Debug\OOP-Project-Tetris.exe
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(43,72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(43,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(53,74): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(53,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(259,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(259,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(362,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(362,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(454,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(454,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(505,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(505,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(603,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(603,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(701,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(701,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(799,75): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\syeda\source\repos\OOP-Project-Tetris\OOP-Project-Tetris\main.cpp(799,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  OOP-Project-Tetris.vcxproj -> C:\Users\syeda\source\repos\OOP-Project-Tetris\x64\Debug\OOP-Project-Tetris.exe

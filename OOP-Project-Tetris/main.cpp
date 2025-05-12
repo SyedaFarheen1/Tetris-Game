@@ -2,6 +2,7 @@
 #include <cstdlib> // For rand() and srand()
 #include <ctime>   // For time()
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 class Board {
@@ -1074,7 +1075,28 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
     return false;
 }
 
+
+//load high score before game starts
+ int loadHighScore(const std::string & filename) {
+        std::ifstream file(filename);
+        int score = 0;
+        if (file >> score)
+            return score;
+        return 0;
+ }
+
+ //save high score to file
+ void saveHighScore(const std::string & filename, int score) {
+        std::ofstream file(filename);
+        if (file)
+            file << score;
+ }
+ 
 void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
+
+//current high score to file
+ int highScore = loadHighScore("highscore.txt");
+
 
     Piece* templates[7];
     templates[0] = new T_Piece();
@@ -1093,7 +1115,6 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     bool isGameOver = false;
 
     int score = 0;
-    int highScore = 0;
     int level = 0;
 
     bool isPaused = false;
@@ -1202,7 +1223,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     gameOverText.setStyle(sf::Text::Bold);
     gameOverText.setPosition(490, 530);
    
-    
+
     //display Current score
     sf::Text scoreText;
     scoreText.setFont(fontLogo2);
@@ -1472,7 +1493,9 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             // Update high score if the current score is greater
             if (score > highScore) {
                 highScore = score;
+                saveHighScore("highscore.txt", highScore);
             }
+
 
             // Render everything in the same pass
             window.clear(sf::Color::Black);

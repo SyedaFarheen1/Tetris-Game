@@ -911,7 +911,7 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
     sf::RectangleShape gameRule(sf::Vector2f(220, 60));
     gameRule.setPosition(350, 490);
     gameRule.setFillColor(sf::Color::Transparent);
-    gameRule.setOutlineThickness(2);
+    gameRule.setOutlineThickness(3);
     gameRule.setOutlineColor(sf::Color::White);
 
     //exit text
@@ -923,7 +923,7 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
     sf::RectangleShape exitBox(sf::Vector2f(220, 60));
     exitBox.setPosition(350, 560);
     exitBox.setFillColor(sf::Color::Transparent);
-    exitBox.setOutlineThickness(2);
+    exitBox.setOutlineThickness(3);
     exitBox.setOutlineColor(sf::Color::White);
     
     sf::Text T("T", fontLogo, 200);
@@ -953,6 +953,8 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
 
     float padding = 15.f;
 
+    int selectIndex = 0;
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -960,14 +962,28 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
                 window.close();
 
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::S) {
-                    return true;
+                if (event.key.code == sf::Keyboard::Up) {
+                    selectIndex = (selectIndex - 1 + 3) % 3;
                 }
-                else if (event.key.code == sf::Keyboard::Escape)
-                    return false;
-
+                else if (event.key.code == sf::Keyboard::Down) {
+                    selectIndex = (selectIndex + 1) % 3;
+                }
+                else if (event.key.code == sf::Keyboard::Enter) {
+                    if (selectIndex == 0) { return true; }
+                    else if (selectIndex == 1) {
+                        cout << "Game Rules" << endl;
+                    }
+                    else if (selectIndex == 2) {
+                        return false;
+                    }
+                }
             }
+            
+                startBox.setOutlineColor(selectIndex == 0 ? sf::Color::Green : sf::Color::White);
+                gameRule.setOutlineColor(selectIndex == 1 ? sf::Color::Green : sf::Color::White);
+                exitBox.setOutlineColor(selectIndex == 2 ? sf::Color::Red : sf::Color::White);
         }
+
 
         window.clear(sf::Color::Black);
         window.draw(gradient);
@@ -1177,7 +1193,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Escape && !isGameOver) {
+                if (event.key.code == sf::Keyboard::P && !isGameOver) {
                     isPaused = !isPaused; // Toggle pause state only if the game is not over
                     if (isPaused)
                         cout << "\nGame Paused!" << endl;

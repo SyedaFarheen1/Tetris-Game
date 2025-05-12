@@ -950,6 +950,51 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
     S.setFillColor(sf::Color::Magenta);
     S.setPosition(660, 100);
 
+    bool showRules = false;
+
+    //rules pop-up box
+    sf::RectangleShape ruleBox(sf::Vector2f(700, 500));
+    ruleBox.setPosition(100, 150);
+    ruleBox.setFillColor(sf::Color(0, 0, 0, 200));
+    ruleBox.setOutlineThickness(3);
+    ruleBox.setOutlineColor(sf::Color::White);
+
+    //rules pop-up text
+    sf::Text rulesText("RULES",fontLogo,30);
+    rulesText.setFillColor(sf::Color::White);
+    rulesText.setPosition(370, 180);
+
+    sf::Text rule1("1. < / >  to move blocks ", fontLogo, 24);
+    rule1.setFillColor(sf::Color::White);
+    rule1.setPosition(150, 250);
+
+    sf::Text rule2("2. Up arrow key to rotate ", fontLogo, 24);
+    rule2.setFillColor(sf::Color::White);
+    rule2.setPosition(150, 300);
+
+    sf::Text rule3("3. Down arrow key to drop faster ", fontLogo, 24);
+    rule3.setFillColor(sf::Color::White);
+    rule3.setPosition(150, 350);
+
+    sf::Text rule4("4. Stack blocks to form a full horizontal line to score ", fontLogo, 24);
+    rule4.setFillColor(sf::Color::White);
+    rule4.setPosition(150, 400);
+
+    sf::Text rule5("5. Game ends when blocks reach the top ", fontLogo, 24);
+    rule5.setFillColor(sf::Color::White);
+    rule5.setPosition(150, 450);
+
+    sf::Text rule6("6. You level up after every 10 lines cleared", fontLogo, 24);
+    rule6.setFillColor(sf::Color::White);
+    rule6.setPosition(150, 500);
+
+    sf::Text rule7("7. Press P to pause the game", fontLogo, 24);
+    rule7.setFillColor(sf::Color::White);
+    rule7.setPosition(150, 550);
+    
+    sf::Text rule8("8. Press Esc to go back ", fontLogo, 24);
+    rule8.setFillColor(sf::Color::White);
+    rule8.setPosition(150, 600);
 
     float padding = 15.f;
 
@@ -961,30 +1006,40 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Up) {
-                    selectIndex = (selectIndex - 1 + 3) % 3;
-                }
-                else if (event.key.code == sf::Keyboard::Down) {
-                    selectIndex = (selectIndex + 1) % 3;
-                }
-                else if (event.key.code == sf::Keyboard::Enter) {
-                    if (selectIndex == 0) { return true; }
-                    else if (selectIndex == 1) {
-                        cout << "Game Rules" << endl;
+            if (!showRules) {
+                if (event.type == sf::Event::KeyPressed) {
+                    if (event.key.code == sf::Keyboard::Up) {
+                        selectIndex = (selectIndex - 1 + 3) % 3;
                     }
-                    else if (selectIndex == 2) {
-                        return false;
+                    else if (event.key.code == sf::Keyboard::Down) {
+                        selectIndex = (selectIndex + 1) % 3;
+                    }
+                    else if (event.key.code == sf::Keyboard::Enter) {
+                        if (selectIndex == 0) {
+                            return true;
+                        }
+                        else if (selectIndex == 1) {
+                            showRules = true;
+                            cout << "Game Rules" << endl;
+                        }
+                        else if (selectIndex == 2) {
+                            return false;
+                        }
                     }
                 }
+
             }
-            
-                startBox.setOutlineColor(selectIndex == 0 ? sf::Color::Green : sf::Color::White);
-                gameRule.setOutlineColor(selectIndex == 1 ? sf::Color::Green : sf::Color::White);
-                exitBox.setOutlineColor(selectIndex == 2 ? sf::Color::Red : sf::Color::White);
+            else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape){
+                showRules = false;
+
         }
 
+        startBox.setOutlineColor(selectIndex == 0 ? sf::Color::Green : sf::Color::White);
+        gameRule.setOutlineColor(selectIndex == 1 ? sf::Color::Green : sf::Color::White);
+        exitBox.setOutlineColor(selectIndex == 2 ? sf::Color::Red : sf::Color::White);
 
+    }
+        //render
         window.clear(sf::Color::Black);
         window.draw(gradient);
         window.draw(startBox);
@@ -1000,6 +1055,19 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
         window.draw(I);
         window.draw(S);
 
+        if (showRules) {
+            window.clear(sf::Color::Black);
+            window.draw(gradient);
+            window.draw(ruleBox);
+            window.draw(rulesText);
+            window.draw(rule1);
+            window.draw(rule2);
+            window.draw(rule3);
+            window.draw(rule4);
+            window.draw(rule5);
+            window.draw(rule6);
+
+        }
         window.display();
     }
     return false;

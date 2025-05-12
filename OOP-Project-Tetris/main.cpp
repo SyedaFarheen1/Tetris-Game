@@ -999,7 +999,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     int level = 0;
 
     bool isPaused = false;
-    int selectedOption = 0; // 0 = Resume, 1 = Restart
+    int selectedOption = 0; // 0 = Resume, 1 = Restart, 2 = Exit 
 
     sf::Font fontLogo2;
     if (!fontLogo2.loadFromFile("C:\\WINDOWS\\Fonts\\comicbd.ttf")) {
@@ -1165,7 +1165,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Escape && !isGameOver) {
+                if (event.key.code == sf::Keyboard::P && !isGameOver) {
                     isPaused = !isPaused; // Toggle pause state only if the game is not over
                     if (isPaused)
                         cout << "\nGame Paused!" << endl;

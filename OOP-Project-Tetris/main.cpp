@@ -1068,7 +1068,8 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
             window.draw(rule4);
             window.draw(rule5);
             window.draw(rule6);
-
+            window.draw(rule7);
+            window.draw(rule8);
         }
         window.display();
     }

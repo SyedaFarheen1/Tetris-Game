@@ -1024,7 +1024,7 @@ bool showStartScreen(sf::RenderWindow& window, sf::Font& font) {
                             cout << "Game Rules" << endl;
                         }
                         else if (selectIndex == 2) {
-                            return false;
+							window.close();
                         }
                     }
                 }
@@ -1097,7 +1097,7 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     int level = 0;
 
     bool isPaused = false;
-    int selectedOption = 0; // 0 = Resume, 1 = Restart
+    int selectedOption = 0; // 0 = Resume, 1 = Restart, 2 = Exit
 
     sf::Font fontLogo2;
     if (!fontLogo2.loadFromFile("C:\\WINDOWS\\Fonts\\comicbd.ttf")) {
@@ -1431,8 +1431,6 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             }
         }
 
-       
-
         // Game over check during spawn
         if (!isGameOver && !currentPiece) {
             if (bagIndex >= 7)
@@ -1471,33 +1469,53 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
             currentPiece->draw(window);
 
         if (isGameOver) {
-            int currentScore = board.getScore();     // Get current score
-            int currentLevel = board.getLevel();     // Get current level
-            //  int highScore = board.getHighScore();    // Optional: if tracking high score separately
+            // Update high score if the current score is greater
+            if (score > highScore) {
+                highScore = score;
+            }
 
-              // Set text strings to show updated values
-            CurrentScore.setString("Current Score\n" + std::to_string(currentScore));
-            HighScore.setString("High Score\n" + std::to_string(highScore));
-            Level.setString("Level\n" + std::to_string(currentLevel));
+            // Render everything in the same pass
+            window.clear(sf::Color::Black);
+            window.draw(gradient2); // Background gradient
+            board.draw(window);     // Draw the board
 
+            // Draw the TETRIS logo
             window.draw(T);
             window.draw(E);
             window.draw(Tt);
             window.draw(R);
             window.draw(I);
             window.draw(S);
+
+            // Display game over text
+            window.draw(gameOverText);
+
+            // Display current score
+            scoreText.setString(std::to_string(score));
             window.draw(CurrentScore);
-            //window.draw(scoreText);
+            window.draw(scoreText);
+
+            // Display high score
+            HighScoreText.setString(std::to_string(highScore));
             window.draw(HighScore);
-            //window.draw(HighScoreText);
-            //window.draw(GameLevel);
+            window.draw(HighScoreText);
+
+            // Display level
+            Level.setString(std::to_string(level));
+            window.draw(GameLevel);
             window.draw(Level);
 
-            window.draw(gameOverText);
+            // Render everything
             window.display();
 
             // Wait and then show start screen
             sf::sleep(sf::seconds(3.0));
+            delete currentPiece;
+            currentPiece = nullptr;
+            board = Board(); // Reset board
+            isGameOver = false;
+            isPaused = false;
+            dropClock.restart();
             showStartScreen(window, font);
         }
 

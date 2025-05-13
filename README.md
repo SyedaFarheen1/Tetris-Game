@@ -28,7 +28,7 @@ How to play:
 1. Use arrow keys (</>) to move the tetrominoes
 2. Use 'up' arrow key for rotation
 3. Use 'down' arrow key to drop the tertominoes faster
-4. Stack blocks without spaces to form a full horizontal line to score
+4. Stack tetrominoes without spaces to form a full horizontal line to score
 5. Game ends when the tetrominoes reach the top
 6. Level increases by 1 after every 10 lines cleared
 7. Press 'P' to pause the game

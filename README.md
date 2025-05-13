@@ -1,6 +1,7 @@
 Tetris Game
 
 Developed as a final project for the second semester Object-Oriented Programming course.
+
 Group Members:
 1. Manal Muneer-24L-0809
 2. Syeda Farheen Masroor-24L-0813

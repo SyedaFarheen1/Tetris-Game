@@ -1267,6 +1267,19 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
     GameLevel.setFillColor(sf::Color::White);
     GameLevel.setPosition(585,420);
 
+    //diplay how to pause 
+    sf::Text pauseHint;
+    pauseHint.setFont(fontLogo2);
+    pauseHint.setString("Press P to pause the game");
+    pauseHint.setCharacterSize(18);
+    pauseHint.setFillColor(sf::Color(200, 200, 200));
+
+    // Calculate position for bottom right corner
+    sf::FloatRect textRect = pauseHint.getLocalBounds();
+    float x = window.getSize().x - textRect.width - 20;
+    float y = window.getSize().y - textRect.height - 20;
+    pauseHint.setPosition(x, y);
+
     // Seed the random number generator
     srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -1579,6 +1592,8 @@ void runGameLoop(sf::RenderWindow& window, sf::Font& font) {
         window.draw(HighScoreText);
         window.draw(GameLevel);
         window.draw(Level);
+        window.draw(pauseHint);
+
         window.display();
         
     }

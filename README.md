@@ -23,3 +23,17 @@ Features of the game:
 - Separate instruction page
 - Option to restart game anytime
 - Sound effects for a more immersive experience
+
+How to play:
+1. Use arrow keys (</>) to move the tetrominoes
+2. Use 'up' arrow key for rotation
+3. Use 'down' arrow key to drop the tertominoes faster
+4. Stack blocks without spaces to form a full horizontal line to score
+5. Game ends when the tetrominoes reach the top
+6. Level increases by 1 after every 10 lines cleared
+7. Press 'P' to pause the game
+8. Press 'esc' to exit the game
+
+Note: You need to have SFML 2.6.2 installed to play this game
+
+
